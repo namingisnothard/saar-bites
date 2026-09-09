@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { mapImages, mapUrl, newsletters, openingNews, places, type Place } from './data';
 import { newsletterTranslations, openingTranslations, placeTranslations, ui, weekdays, type Lang } from './i18n';
 import MapView from './MapView';
+import Reviews from './Reviews';
+import Link from 'next/link';
 
 type Status = { state: 'open' | 'closed' | 'unknown'; label: string; detail: string; closeIn?: number; openIn?: number; opensAt?: string };
 type DiceScope = 'open' | 'restaurant' | 'cafe' | 'filtered' | 'all';
@@ -78,6 +80,7 @@ export default function Home() {
   const [diceScope,setDiceScope] = useState<DiceScope>('open');
   const [dicePlace,setDicePlace] = useState<Place | null>(null);
   const [rolling,setRolling] = useState(false);
+  const [reviewPlace,setReviewPlace] = useState<string | null>(null);
 
   useEffect(() => {
     const update = () => setNow(new Date());
@@ -210,7 +213,7 @@ export default function Home() {
       <nav className="nav-shell">
         <a className="brand" href="#top"><span className="brand-mark">SB</span><span>SAAR BITES</span></a>
         <div className="nav-links"><a href="#radar">{t('nowNav')}</a><a href="#dice">{t('diceNav')}</a><a href="#places">{t('savedNav')}</a><a href="#new">{t('newsNav')}</a></div>
-        <div className="nav-tools"><div className="language-switch" role="group" aria-label={t('language')}>{([['mix','ZN/EN'],['en','EN'],['de','DE']] as [Lang,string][]).map(([value,label])=><button key={value} className={lang===value?'active':''} onClick={()=>chooseLanguage(value)} aria-pressed={lang===value}>{label}</button>)}</div><div className="nav-meta"><span className="live-dot" />{t('locale')} {localTime}</div></div>
+        <div className="nav-tools"><Link className="life-nav-link" href="/life">{lang === 'en' ? 'Saar Life ↗' : lang === 'de' ? 'Saar-Leben ↗' : '萨尔生活 ↗'}</Link><div className="language-switch" role="group" aria-label={t('language')}>{([['mix','ZN/EN'],['en','EN'],['de','DE']] as [Lang,string][]).map(([value,label])=><button key={value} className={lang===value?'active':''} onClick={()=>chooseLanguage(value)} aria-pressed={lang===value}>{label}</button>)}</div><div className="nav-meta"><span className="live-dot" />{t('locale')} {localTime}</div></div>
       </nav>
 
       <section className="hero" id="top">
@@ -230,7 +233,7 @@ export default function Home() {
             </div>}
             {query && <div className="search-count">{shown.length} {t('matches')} · <button onClick={()=>document.querySelector('#places')?.scrollIntoView({behavior:'smooth'})}>{t('allSaved')} ↓</button></div>}
           </div>
-          <div className="hero-stats"><div><strong>{places.length}</strong><span>{t('savedCount')}</span></div><div><strong>{openPlaces.length}</strong><span>{t('openCount')}</span></div><div><strong>09·01</strong><span>{t('checked')}</span></div></div>
+          <div className="hero-stats"><div><strong>{places.length}</strong><span>{t('savedCount')}</span></div><div><strong>{openPlaces.length}</strong><span>{t('openCount')}</span></div><div><strong>09·04</strong><span>{t('checked')}</span></div></div>
         </div>
         <div className="now-card">
           <div className="now-topline"><span>OPEN-NOW RADAR</span><span className="pulse">● LIVE</span></div>
@@ -303,11 +306,13 @@ export default function Home() {
             </div>
             <div className="row-score"><strong>{place.rating}</strong><span>★ Google</span><small>{place.reviews.toLocaleString(timeLocale)} {t('reviewCount')}</small></div>
             <div className="row-menu"><span>MENU</span><p>{placeCopy(place)[1]}</p></div>
-            <div className="row-actions"><a className="menu-button" href={menuUrl(place)} target="_blank" rel="noreferrer">{t('menu')}</a><a href={mapUrl(place)} target="_blank" rel="noreferrer">{t('maps')}</a></div>
+            <div className="row-actions"><button type="button" className="review-open" onClick={() => setReviewPlace(place.name)}>{lang === 'en' ? 'Rate & review' : lang === 'de' ? 'Bewerten' : '评分 / 评论'}</button><a className="menu-button" href={menuUrl(place)} target="_blank" rel="noreferrer">{t('menu')}</a><a href={mapUrl(place)} target="_blank" rel="noreferrer">{t('maps')}</a></div>
           </article>)}
         </div>}
         {!shown.length && <div className="empty">{t('empty')}</div>}
       </section>
+
+      {reviewPlace && <Reviews key={reviewPlace} place={reviewPlace} lang={lang} onClose={() => setReviewPlace(null)} />}
 
       <section className="news-section" id="new">
         <div className="news-title"><p className="eyebrow">{t('newsEyebrow')}</p><h2>{t('newsTitle')}</h2><p>{t('newsIntro')}</p></div>

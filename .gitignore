@@ -60,3 +60,10 @@ next-env.d.ts
 
 # local hosting project binding
 /.openai/hosting.json
+
+# Isolated GitHub Pages builds and account-specific backend configuration
+/.pages-build/
+/backend/wrangler.production.json
+
+/backend/dist/
+/backend/.wrangler/

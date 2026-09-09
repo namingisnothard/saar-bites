@@ -46,7 +46,6 @@ export const places: Place[] = [
   { name:'Brot & Sinne - Quartier Mainzer Strasse', category:'面包房 · 咖啡', group:'bakery', rating:4.6, reviews:164, sources:['Café'], address:'Mainzer Str. 86, 66121 Saarbrücken', website:'https://www.brotundsinne.de/', menuNote:'当日面包、早餐与午餐', schedule:d([['08:00','12:00']],[['07:00','19:00']],[['07:00','19:00']],[['07:00','19:00']],[['07:00','19:00']],[['07:00','19:00']],[['07:00','19:00']]) },
   { name:'Black Hen Rösthandwerk Saarbrücken', category:'咖啡烘焙坊', group:'cafe', rating:5.0, reviews:159, sources:['Café'], address:'Zum Gerlen 5, 66131 Saarbrücken', website:'https://www.blackhen.de/', menuNote:'咖啡豆与烘焙工作室 · 到访前请确认', schedule:null },
   { name:'Fredrik - Saarbrücken', category:'北欧咖啡 · Brunch', group:'cafe', rating:4.4, reviews:931, sources:['Café'], address:'Keplerstraße 12, 66117 Saarbrücken', website:'http://www.fredrik.saarland/', menuNote:'官网菜单 · Brunch 与北欧风咖啡', schedule:d([['10:00','17:00']],[['09:00','17:00']],[['09:00','17:00']],[['09:00','17:00']],[['09:00','17:00']],[['09:00','17:00']],[['10:00','17:00']]) },
-  { name:'Café 77', category:'早餐 · 咖啡', group:'cafe', rating:4.7, reviews:132, sources:['Café'], address:'Eisenbahnstraße 45, 66117 Saarbrücken', website:'https://www.cafe77sb.de/', menuNote:'官网菜单 · 早餐与咖啡', schedule:d([['09:30','16:00']],[],[['09:00','16:00']],[['09:00','16:00']],[['09:00','16:00']],[['09:00','16:00']],[['09:30','16:00']]) },
   { name:'Café Lolo', category:'咖啡 · Konditorei', group:'dessert', rating:4.7, reviews:2169, sources:['Café'], address:'Heuduckstraße 67, 66117 Saarbrücken', website:'https://www.cafe-lolo.de/', menu:'https://cafe-lolo.de/images/sortiment.pdf', menuNote:'2026 Sortiment · 蛋糕与 Butterkuchen', schedule:d([['08:00','18:00']],[],[['07:00','18:00']],[['07:00','18:00']],[['07:00','18:00']],[['07:00','18:00']],[['07:00','18:00']]) },
   { name:'Palazzo Sandro | Saarbrücken', category:'意式冰淇淋', group:'dessert', rating:4.3, reviews:183, sources:['Starred'], address:'Bahnhofstraße 16, 66111 Saarbrücken', website:'https://palazzosandro.de/', menu:'https://weur-cdn.speisekarte.menu/storage/media/companies_menu_pdf/113995223/palazzo-sandro-saarbrucken-speisekarte.pdf', menuNote:'2026 菜单 · Gelato、Eisbecher、Eistorten', schedule:d([['12:30','21:00']],[['11:30','21:00']],[['11:30','21:00']],[['11:30','21:00']],[['11:30','21:00']],[['11:30','21:00']],[['11:30','21:00']]) },
   { name:'Zapata - Saarbrücken', category:'西班牙 · Tapas', group:'restaurant', rating:4.2, reviews:1150, sources:['Starred'], address:'Hinterhof, Mainzer Str. 8, 66111 Saarbrücken', website:'https://www.zapata.saarland/', menu:'https://www.zapata.saarland/speisekarte', menuNote:'最新官网菜单 · Tapas、Social Plates 与 Drinks', schedule:d([['17:30','23:00']],[['17:30','23:00']],[['17:30','23:00']],[['17:30','23:00']],[['17:30','23:00']],[['17:30','24:00']],[['17:30','24:00']]) },
@@ -95,7 +94,6 @@ export const placeCoordinates: Record<string, [number, number]> = {
   'Brot & Sinne - Quartier Mainzer Strasse':[49.2299543,7.0074145],
   'Black Hen Rösthandwerk Saarbrücken':[49.2114897,7.1131881],
   'Fredrik - Saarbrücken':[49.2349788,6.9857436],
-  'Café 77':[49.2355826,6.9892735],
   'Café Lolo':[49.2335174,6.9744717],
   'Palazzo Sandro | Saarbrücken':[49.2336613,6.9957223],
   'Zapata - Saarbrücken':[49.2321364,6.9997662],
@@ -155,7 +153,6 @@ export const mapImages: Record<string, string> = {
   'Brot & Sinne - Quartier Mainzer Strasse':'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWn28dCuBgrLQ3v-rS18FPWnzAtXprQraAJXrANKa_MSHP8uS9oBdffY9skTpIgvTeyB1g-FC9bNwPE3_YMZQgkmXlomTydUovoAL1ez_fHXcNRr0Svc20Z8kxNiuxAajteYYLWh=w426-h240-k-no',
   'Black Hen Rösthandwerk Saarbrücken':'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWni2MRerVJl_hbnRS3vFvOVR-EiDDW7qParjMqrli6v5jUk9hmGVzVzmAPN-QDZ-l51snYwit7LzeKZ0hahYKtNNt20aBKEe2IhK9TuAZCksx2ktXo4QoYza581GGQaSP5Nm8tfEw=w408-h306-k-no',
   'Fredrik - Saarbrücken':'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkp7uBJJrPlOVX_eMNIJxjSHMconuBOq-dUzPio6gpA9HlkmO94ChURAoCH1v7qbO3pJYDch6xa0GziCPI52wZvrUryLE2wuEQvoJ1O4GnvYHH-POF7PEeK1kPHAv-XjCjiFYZ1=w408-h272-k-no',
-  'Café 77':'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlZdGYNaE-ByIMcRalCzAmp1XpZfkhsP4FV8st2I3xrq6KdPWJWVZlK_8MozAXKYxjiUGEBS1eKWLfVLBAnDYyHcNbPKC-FC_IUZsn14Co58JJTwdBzdMmVizI2LhhZwvOfy6NWJTnT4lfg=w408-h306-k-no',
   'Café Lolo':'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkq7y_cCWewKEvpo_q9ZIT9Dwb1mKf8wm4ITBa-QxpCQiqd9sr5vQH3RamTD4PuCaQOho6L-UY5vCzJzb82aJTtN7xfIOBRvCoRsWLXlkKvItN2iv2rDVa1qNh7YCC631Fie5dI-Q=w408-h275-k-no',
   'Palazzo Sandro | Saarbrücken':'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl8ZwOhi9YKaCeGoNCBQCM-tmptcVq1r8yqRdfaWO7WZCa-k-ZgPIukDKD07GK-HIVoE0sikDsGgn3elpIvaijO4DwalaebcppS78heaQADPvPt2JFVoyJpEo_7UGWrwOt2Qp7D_g=w408-h306-k-no',
   'Zapata - Saarbrücken':'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWl0xiynX0jRiVijTdl9vCbAXjJfPgHoQHtKfbNFNFEaTcLnI75pjBYDOLachR35ANFpDwgPyPbribGZyzFB_WON6ncIxAtkdif3k6BJ3HNK5P5T4vjHTSNbFy10TUMaHmnh5Pr45w=w408-h272-k-no',
@@ -164,11 +161,11 @@ export const mapImages: Record<string, string> = {
 };
 
 export const openingNews = [
-  {date:'07 AUG 2026',state:'刚开业',name:'Amidos & Helmi',category:'突尼斯 · 地中海 · Burger',address:'Mainzer Straße 102, 66121 Saarbrücken',note:'8 月新店，把突尼斯家常菜、Couscous 与现代 Grill/Burger 放在同一张菜单里。',url:'https://amidos-helmi.de/'},
-  {date:'22 MAR 2026',state:'新店',name:'Casa Anatolia',category:'安纳托利亚 · Pide · Grill',address:'Vorstadtstraße 33, 66117 Saarbrücken',note:'三月开业，主打 Pide、Manti、Köfte、烤肉和自制面包。',url:'https://www.casaanatolia-saarbrucken.de/'},
-  {date:'05 SEP 2026',state:'即将重开',name:'Halbmond Restaurant',category:'阿拉伯 · Café · Terrasse',address:'Fröschengasse 18, 66111 Saarbrücken',note:'报道计划 9 月 5 日以新团队重新开业；日期仍可能调整，出发前请查官网。',url:'https://www.halbmondrestaurant.de/'},
-  {date:'DEC 2025',state:'近期新店',name:'Dang Dang',category:'中餐 · Dim Sum · 面食',address:'Kappenstraße 9, 66111 Saarbrücken',note:'4.8 ★ / 83 条 Google 评价；菜单里有点心、麻婆豆腐与北京烤鸭。',url:'https://asia-zone.com/website/dang-dang-saarbruecken'},
-  {date:'NOV 2025',state:'近期新店',name:'Cafe Extrablatt Saarbrücken',category:'全天咖啡 · 早餐 · Bistro',address:'Bahnhofstraße 18, 66111 Saarbrücken',note:'历史建筑里的全天候咖啡餐吧，现有 4.1 ★ / 253 条 Google 评价。',url:'https://cafe-extrablatt.de/standorte/details/cafe-extrablatt-saarbruecken'},
+  {date:'12 SEP 2026',state:'即将开业',name:'Why Not Sushi',category:'日式 · Sushi',address:'Bahnhofstraße 58, 66111 Saarbrücken',note:'据开业资讯网站预告，计划 9 月 12 日开业；出发前请向店家确认日期。',url:'https://www.neueroeffnung.info/saarbruecken/why-not-sushi-restaurant'},
+  {date:'05 SEP 2026',state:'重开待确认',name:'Halbmond Restaurant',category:'阿拉伯 · Café · Terrasse',address:'Fröschengasse 18, 66111 Saarbrücken',note:'此前预告 9 月 5 日重开，但官网仍有未注明月份的休假通知；截至 9 月 9 日尚无法确认，建议先联系店家。',url:'https://www.halbmondrestaurant.de/'},
+  {date:'07 AUG 2026',state:'新店',name:'Amidos & Helmi',category:'突尼斯 · 地中海 · Burger',address:'Mainzer Straße 102, 66121 Saarbrücken',note:'官网公布 8 月 7 日开业，主打突尼斯家常菜、Couscous 与 Grill/Burger。',url:'https://amidos-helmi.de/'},
+  {date:'07 JUL 2026',state:'夏季新店',name:'Pasteria al Dente',category:'意式 · Pasta',address:'Sankt-Johanner-Markt 22, 66111 Saarbrücken',note:'据开业资讯网站，原定春季的开业计划因装修延期至 7 月 7 日；位于 Stengelbrunnen 对面。',url:'https://www.neueroeffnung.info/saarbruecken/pasteria-al-dente'},
+  {date:'15 JUN 2026',state:'夏季新店',name:'Schnitzery',category:'Schnitzel · 快餐',address:'Berliner Promenade 18, 66111 Saarbrücken',note:'开业资讯网站于 7 月确认，这家 Berliner Promenade 新店已在 6 月 15 日开业。',url:'https://www.neueroeffnung.info/saarbruecken/schnitzery_6'},
 ];
 
 export const newsletters = [

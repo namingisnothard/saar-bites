@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "db/**/*.ts",
+    "drizzle.config.ts",
+    "vite.config.ts",
+    "next.config.ts",
+    "backend/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "dist",
+    ".pages-build"
+  ]
+}

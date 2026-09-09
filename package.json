@@ -8,12 +8,23 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
-    "build:pages": "DEPLOY_GITHUB_PAGES=1 NEXT_PUBLIC_BASE_PATH=/saar-bites next build",
+    "build:pages": "node scripts/build-pages.mjs",
     "start": "vinext start",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local --persist-to .wrangler/state --config scripts/wrangler.local.json",
+    "typecheck": "tsc --noEmit -p tsconfig.check.json",
+    "test:reviews": "node scripts/test-reviews.mjs",
+    "test:reviews:cleanup": "node scripts/cleanup-review-tests.mjs",
+    "dev:api": "wrangler dev --config backend/wrangler.local.json --local --persist-to .wrangler/state --port 8787 --inspector-port 9231",
+    "build:api": "wrangler deploy --config backend/wrangler.local.json --dry-run --outdir dist/api",
+    "deploy:api": "node scripts/deploy-api.mjs",
+    "test:cors": "node scripts/test-cors.mjs",
+    "test:upload": "node --experimental-strip-types scripts/test-upload.mjs"
   },
   "dependencies": {
     "@types/leaflet": "^1.9.22",
+    "drizzle-orm": "^0.45.2",
     "leaflet": "^1.9.4",
     "next": "16.2.6",
     "react": "19.2.6",
@@ -31,6 +42,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.2",
     "@vitejs/plugin-rsc": "0.5.26",
+    "drizzle-kit": "^0.31.10",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.6",
     "lightningcss-wasm": "^1.31.1",

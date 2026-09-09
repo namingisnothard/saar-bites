@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   basePath,
   assetPrefix: basePath || undefined,
   trailingSlash: isGitHubPages,
+  // Vinext applies this limit while inspecting multipart API requests too.
+  experimental: { serverActions: { bodySizeLimit: '16mb' } },
   images: {
     unoptimized: true,
   },
