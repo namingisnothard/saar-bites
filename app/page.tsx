@@ -5,6 +5,7 @@ import { mapImages, mapUrl, newsletters, openingNews, places, type Place } from 
 import { newsletterTranslations, openingTranslations, placeTranslations, ui, weekdays, type Lang } from './i18n';
 import MapView from './MapView';
 import Reviews from './Reviews';
+import { compareCommunity } from './lib/community-sort';
 import { reviewApiUrl } from './lib/review-api';
 import Link from 'next/link';
 
@@ -162,12 +163,13 @@ export default function Home() {
       return matchesText && matchesFilter && matchesCuisine && matchesDay && (!openOnly || status.state === 'open');
     });
     return list.sort((a,b) => {
+      if (sort === 'site-rating' || sort === 'site-reviews') return compareCommunity(a.place.name,b.place.name,siteScores,sort);
       if (sort === 'rating') return b.place.rating - a.place.rating;
       if (sort === 'reviews') return b.place.reviews - a.place.reviews;
       const order = {open:0,unknown:1,closed:2};
       return order[a.status.state] - order[b.status.state] || b.place.rating - a.place.rating;
     });
-  }, [enriched,filter,cuisine,selectedDay,openOnly,query,sort,placeCopy]);
+  }, [enriched,filter,cuisine,selectedDay,openOnly,query,sort,placeCopy,siteScores]);
 
   const suggestions = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -226,7 +228,7 @@ export default function Home() {
       <nav className="nav-shell">
         <a className="brand" href="#top"><span className="brand-mark">SB</span><span>SAAR BITES</span></a>
         <div className="nav-links"><a href="#radar">{t('nowNav')}</a><a href="#dice">{t('diceNav')}</a><a href="#places">{t('savedNav')}</a><a href="#new">{t('newsNav')}</a></div>
-        <div className="nav-tools"><Link className="life-nav-link" href="/reviews">{lang === 'en' ? 'Latest reviews' : lang === 'de' ? 'Neue Bewertungen' : '最新打卡'}</Link><Link className="life-nav-link" href="/life">{lang === 'en' ? 'Saar Life ↗' : lang === 'de' ? 'Saar-Leben ↗' : '萨尔生活 ↗'}</Link><div className="language-switch" role="group" aria-label={t('language')}>{([['mix','ZN/EN'],['en','EN'],['de','DE']] as [Lang,string][]).map(([value,label])=><button key={value} className={lang===value?'active':''} onClick={()=>chooseLanguage(value)} aria-pressed={lang===value}>{label}</button>)}</div><div className="nav-meta"><span className="live-dot" />{t('locale')} {localTime}</div></div>
+        <div className="nav-tools"><Link className="life-nav-link" href="/board">{lang === 'en' ? 'Message board' : lang === 'de' ? 'Pinnwand' : '留言板'}</Link><Link className="life-nav-link" href="/reviews">{lang === 'en' ? 'Latest reviews' : lang === 'de' ? 'Neue Bewertungen' : '最新打卡'}</Link><Link className="life-nav-link" href="/life">{lang === 'en' ? 'Saar Life ↗' : lang === 'de' ? 'Saar-Leben ↗' : '萨尔生活 ↗'}</Link><div className="language-switch" role="group" aria-label={t('language')}>{([['mix','ZN/EN'],['en','EN'],['de','DE']] as [Lang,string][]).map(([value,label])=><button key={value} className={lang===value?'active':''} onClick={()=>chooseLanguage(value)} aria-pressed={lang===value}>{label}</button>)}</div><div className="nav-meta"><span className="live-dot" />{t('locale')} {localTime}</div></div>
       </nav>
 
       <section className="hero" id="top">
@@ -301,7 +303,7 @@ export default function Home() {
         <div className="section-heading"><div><p className="eyebrow">{t('curated')}</p><h2>{t('allSaved')}</h2></div><div className="view-tools"><span>{shown.length} / {places.length} {t('placesUnit')}</span><div className="view-switch" role="group"><button className={view==='list'?'active':''} onClick={()=>setView('list')}>☷ {t('listView')}</button><button className={view==='map'?'active':''} onClick={()=>setView('map')}>⌖ {t('mapView')}</button></div></div></div>
         <div className="filter-bar">
           <div className="filter-chips">{filters.map(([value,label])=><button key={value} className={filter===value?'active':''} onClick={()=>setFilter(value)}>{label}</button>)}{selectedDay!==null&&<button className="day-filter-clear" onClick={()=>setSelectedDay(null)}>{weekdays[lang][selectedDay]} · {t('openOn')} ×</button>}</div>
-          <div className="sort-wrap"><label>{t('sort')}</label><select value={sort} onChange={(e)=>setSort(e.target.value)}><option value="smart">{t('smart')}</option><option value="rating">{t('rating')}</option><option value="reviews">{t('reviewsSort')}</option></select></div>
+          <div className="sort-wrap"><label>{t('sort')}</label><select value={sort} onChange={(e)=>setSort(e.target.value)}><option value="smart">{t('smart')}</option><option value="rating">{t('rating')}</option><option value="reviews">{t('reviewsSort')} · Google</option><option value="site-rating" disabled={scoresStatus !== 'ready'}>{lang === 'en' ? 'Highest community rating' : lang === 'de' ? 'Beste Community-Bewertung' : '本站评分最高'}</option><option value="site-reviews" disabled={scoresStatus !== 'ready'}>{lang === 'en' ? 'Most community reviews' : lang === 'de' ? 'Meiste Community-Bewertungen' : '本站评论最多'}</option></select></div>
         </div>
         <div className="cuisine-bar"><span>{t('cuisine')}</span><div className="cuisine-chips">{cuisineFilters.map(([value,label])=><button key={value} className={cuisine===value?'active':''} onClick={()=>setCuisine(value)}>{label}</button>)}</div></div>
         {view === 'map' && <div className="map-shell"><div className="map-heading"><p>{t('mapHint')}</p><span>{shown.length} {t('mapPlaces')}</span></div><MapView entries={shown} categoryFor={categoryFor} openMapLabel={t('openMap')} /></div>}

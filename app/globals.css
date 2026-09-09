@@ -367,3 +367,12 @@ footer p { max-width:680px; margin:0; color:#b9c1bc; font-size:10px; line-height
 @media(max-width:1200px) and (min-width:681px) { .place-row{grid-template-columns:48px 120px minmax(180px,1fr) 190px 100px}.row-menu{display:none}.row-scores .row-score strong{font-size:32px} }
 @media(max-width:680px) { .place-row{grid-template-columns:50px 110px minmax(0,1fr)}.row-index{grid-row:1/4}.row-scores{grid-column:2/4;grid-row:2}.row-scores .row-score{grid-column:auto;border-top:1px solid var(--ink);padding:14px 8px}.row-actions{grid-column:2/4;grid-row:3}.row-scores .row-score:last-child{border-right:0} }
 .latest-entry .latest-kind { display:inline-block; margin:0 0 14px; padding:4px 10px; border-radius:100px; background:var(--lime); font-size:12px; font-weight:700; }
+.board-layout { display:grid; grid-template-columns:minmax(280px,.8fr) minmax(0,1.2fr); gap:32px; max-width:1300px; margin:auto; padding:40px clamp(20px,4vw,48px); align-items:start; }
+.board-form { border:1px solid var(--ink); border-radius:16px; }
+.board-form fieldset>label { display:grid; gap:8px; margin:18px 0; font-size:14px; font-weight:700; }
+.board-form fieldset>.review-anonymous { display:flex; align-items:center; }
+.board-feed { min-width:0; font-size:16px; line-height:1.6; }
+.board-feed-heading { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; }
+.board-feed-heading .review-secondary { margin:0; }
+.board-message { margin:20px 0; }.board-message h3{font-size:24px;overflow-wrap:anywhere;margin:16px 0 8px}.board-location{color:#536057;font-size:14px}.board-layout button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:800px){.board-layout{grid-template-columns:1fr}.board-message .review-byline{flex-wrap:wrap}.board-message time{white-space:normal}}

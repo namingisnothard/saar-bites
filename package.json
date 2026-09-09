@@ -20,7 +20,8 @@
     "build:api": "wrangler deploy --config backend/wrangler.local.json --dry-run --outdir dist/api",
     "deploy:api": "node scripts/deploy-api.mjs",
     "test:cors": "node scripts/test-cors.mjs",
-    "test:upload": "node --experimental-strip-types scripts/test-upload.mjs"
+    "test:upload": "node --experimental-strip-types scripts/test-upload.mjs",
+    "test:board": "node --experimental-strip-types scripts/test-board.mjs"
   },
   "dependencies": {
     "@types/leaflet": "^1.9.22",

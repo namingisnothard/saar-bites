@@ -7,6 +7,7 @@ The API runs as a separate Cloudflare Worker in the Cloudflare account used to d
 | --- | --- |
 | Restaurant / shopping directory | Versioned source in GitHub |
 | Ratings, comments, display names, photo IDs, timestamps | Cloudflare D1, `saar-bites-reviews` |
+| Place suggestions, public messages and display names | Cloudflare D1, `suggestions` table |
 | Photo bytes | Private Cloudflare R2 bucket, `saar-bites-review-photos` |
 | Local development data | `.wrangler/state/` on this computer, ignored by Git |
 
@@ -66,3 +67,5 @@ npm run test:reviews:cleanup
 Tests only accept loopback API hosts and create identifiable temporary reviews. Cleanup removes only the exact generated test IDs and their photos from local storage. `build:api` is a dry run and never deploys.
 
 The Pages builder stages frontend files in an isolated temporary directory, excludes server routes and bindings, and copies only the successful static export to `out/`. It does not rename/delete live source routes or interfere with the normal dev server. Deployment credentials belong in your Cloudflare session or CI secrets, never in `NEXT_PUBLIC_*` variables.
+
+The `/board/` message board uses `/api/suggestions` with the same origin allowlist. Suggestions are public recommendations, not automatically added directory entries. `npm run test:board` verifies local suggestions and community sorting and removes only its own exact test messages.

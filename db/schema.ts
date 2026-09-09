@@ -13,3 +13,12 @@ export const reviews = sqliteTable('reviews', {
   index('idx_reviews_place_created').on(table.place, table.createdAt),
   check('reviews_rating_range', sql`${table.rating} between 1 and 5`),
 ]);
+
+export const suggestions = sqliteTable('suggestions', {
+  id:text('id').primaryKey(),
+  place:text('place').notNull(),
+  location:text('location').notNull().default(''),
+  message:text('message').notNull(),
+  author:text('author'),
+  createdAt:integer('created_at').notNull(),
+}, table => [index('idx_suggestions_created').on(table.createdAt)]);

@@ -1,3 +1,4 @@
+import { getSuggestions, postSuggestion } from './suggestions';
 import { getReviews, postReview } from './reviews';
 import { getPhoto } from './photos';
 import type { ReviewEnv } from './types';
@@ -21,8 +22,9 @@ export async function handleReviewRequest(request: Request, env: ReviewEnv): Pro
   if (origin && !allowed) return respond(Response.json({ error:'Origin not allowed' }, {status:403}));
   const photoMatch = /^\/api\/review-photos\/([^/]+)$/.exec(url.pathname);
   const isReviews = url.pathname === '/api/reviews';
-  if (!isReviews && !photoMatch) return respond(new Response('Not found', {status:404}));
-  const methods = isReviews ? ['GET','POST','OPTIONS'] : ['GET','HEAD','OPTIONS'];
+  const isBoard = url.pathname === '/api/suggestions';
+  if (!isBoard && !isReviews && !photoMatch) return respond(new Response('Not found', {status:404}));
+  const methods = isReviews || isBoard ? ['GET','POST','OPTIONS'] : ['GET','HEAD','OPTIONS'];
   if (request.method === 'OPTIONS') {
     const requestedMethod = request.headers.get('Access-Control-Request-Method') || '';
     const requestedHeaders = (request.headers.get('Access-Control-Request-Headers') || '').split(',').map(value => value.trim().toLowerCase()).filter(Boolean);
@@ -37,6 +39,7 @@ export async function handleReviewRequest(request: Request, env: ReviewEnv): Pro
   if (request.method === 'POST' && !allowed) return respond(Response.json({error:'Origin required'}, {status:403}));
   try {
     if (!env.DB || !env.REVIEW_PHOTOS) throw new Error('Missing storage bindings');
+    if (isBoard) return respond(await (request.method === 'GET' ? getSuggestions(request,env) : postSuggestion(request,env)));
     if (isReviews) return respond(await (request.method === 'GET' ? getReviews(request,env) : postReview(request,env)));
     const response = await getPhoto(photoMatch![1],env);
     return respond(request.method === 'HEAD' ? new Response(null,{status:response.status,headers:response.headers}) : response);

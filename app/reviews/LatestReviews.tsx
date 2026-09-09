@@ -46,7 +46,7 @@ export default function LatestReviews() {
   },[load]);
   useEffect(() => { document.documentElement.lang = locale === 'zh' ? 'zh-CN' : locale; },[locale]);
   return <main className="life-page latest-page">
-    <nav className="life-nav"><Link href="/" className="brand"><span>SB</span> SAAR BITES</Link><div><Link href="/">← {c.back}</Link><Link href="/life">{c.life}</Link><div className="life-languages" aria-label="Language">{(['mix','en','de'] as Lang[]).map(item=><button key={item} aria-pressed={lang===item} onClick={()=>{setLang(item);localStorage.setItem('saar-bites-language',item);}}>{item==='mix'?'中文':item.toUpperCase()}</button>)}</div></div></nav>
+    <nav className="life-nav"><Link href="/" className="brand"><span>SB</span> SAAR BITES</Link><div><Link href="/">← {c.back}</Link><Link href="/life">{c.life}</Link><Link href="/board">{locale === 'en' ? 'Message board' : locale === 'de' ? 'Pinnwand' : '留言板'}</Link><div className="life-languages" aria-label="Language">{(['mix','en','de'] as Lang[]).map(item=><button key={item} aria-pressed={lang===item} onClick={()=>{setLang(item);localStorage.setItem('saar-bites-language',item);}}>{item==='mix'?'中文':item.toUpperCase()}</button>)}</div></div></nav>
     <header className="life-heading latest-heading"><div><p>SAARBRÜCKEN · COMMUNITY TABLE</p><h1>{c.title}</h1><p>{c.intro}</p></div><button className="review-submit" disabled={loading} onClick={()=>void load()}>{c.refresh} ↻</button></header>
     <section className="latest-feed" aria-label={c.title} aria-busy={loading}>
       <p className="latest-count">{count} {c.count}</p>
