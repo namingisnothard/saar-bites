@@ -8,6 +8,7 @@ export type Place = {
   sources: string[];
   address: string;
   website?: string;
+  maps?: string;
   menu?: string;
   menuNote: string;
   schedule: Interval[][] | null;
@@ -17,6 +18,9 @@ const d = (...days: Interval[][]): Interval[][] => days;
 const q = (name: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name} Saarbrücken`)}`;
 
 export const places: Place[] = [
+  // Listing snapshots: Wanderlog, checked 2026-09-09. the bakery's hours differ across sources.
+  { name:'the bakery', category:'咖啡 · 烘焙 · 早餐', group:'bakery', rating:4.6, reviews:656, sources:['Saarbrücken','Café'], address:'Gerberstraße 7, 66111 Saarbrücken', website:'https://www.facebook.com/thebakery.saarbruecken', maps:'https://www.google.com/maps?cid=4958234852955040279', menuNote:'可颂、Quiche 与蛋糕 · 营业时间请查看 Google Maps', schedule:null },
+  { name:'Bäckerei - Konditorei Erhard Heil', category:'面包房 · 糕点', group:'bakery', rating:4.4, reviews:437, sources:['Saarbrücken'], address:'Bahnhofstraße 101A, 66111 Saarbrücken', website:'https://www.facebook.com/heilbackerei', maps:'https://www.google.com/maps?cid=7006462121478122254', menuNote:'面包、Apfelkrapfen 与蛋糕', schedule:d([], ...Array.from({length:6},()=>[['06:00','18:00']] as Interval[])) },
   { name:'Café Bisous', category:'咖啡 · Brunch', group:'cafe', rating:4.7, reviews:288, sources:['Saarbrücken','Café'], address:'Mainzer Str. 72, 66121 Saarbrücken', website:'https://bisous-saarbruecken.eatbu.com/', menuNote:'菜单照片 · Pancakes、Avocado Toast', schedule:d([['09:00','16:00']],[['09:00','16:00']],[],[['09:00','16:00']],[['09:00','16:00']],[['09:00','16:00']],[['09:00','16:00']]) },
   { name:'Siam', category:'泰国菜', group:'restaurant', rating:4.4, reviews:484, sources:['Saarbrücken'], address:'Mainzer Str. 22, 66111 Saarbrücken', website:'https://www.restaurant-siam.de/', menu:'https://www.restaurant-siam.de/speisekarte', menuNote:'官网菜单 · 泰式咖喱、脆皮鸭', schedule:d([],[],[['12:00','15:00'],['18:00','22:00']],[['12:00','15:00'],['18:00','22:00']],[['12:00','15:00'],['18:00','22:00']],[['12:00','15:00'],['18:00','23:00']],[['18:00','23:00']]) },
   { name:'F.A.K | Fresh Asian Kitchen', category:'亚洲融合菜', group:'restaurant', rating:4.6, reviews:326, sources:['Saarbrücken'], address:'Berliner Promenade 18, 66111 Saarbrücken', website:'https://fak-food.com/', menuNote:'官网菜单 · Fresh Asian Kitchen', schedule:d([['15:00','21:30']],[['11:30','15:00'],['17:30','21:30']],[['11:30','15:00'],['17:30','21:30']],[['11:30','15:00'],['17:30','21:30']],[['11:30','15:00'],['17:30','21:30']],[['11:30','15:00'],['17:30','21:30']],[['12:00','15:00'],['17:00','22:00']]) },
@@ -65,6 +69,8 @@ export const places: Place[] = [
 ];
 
 export const placeCoordinates: Record<string, [number, number]> = {
+  'the bakery':[49.2338311,6.9964672],
+  'Bäckerei - Konditorei Erhard Heil':[49.2378053,6.9912288],
   'Café Bisous':[49.2302033,7.0058480],
   'Siam':[49.2314072,7.0011183],
   'F.A.K | Fresh Asian Kitchen':[49.2344520,6.9931977],
@@ -113,6 +119,8 @@ export const placeCoordinates: Record<string, [number, number]> = {
 };
 
 export const mapImages: Record<string, string> = {
+  'the bakery':'https://itin-dev.wanderlogstatic.com/freeImageSmall/E8ZO78ORHfGHzXSOqAfKNJUlAhFGusyG',
+  'Bäckerei - Konditorei Erhard Heil':'https://itin-dev.wanderlogstatic.com/freeImageSmall/kGkpNAIxjsBIHGo2cwCLUPJjCzSCgplT',
   'Dang Dang':'https://pub-b2129fef1d2d4d4591d29f2baa8a348e.r2.dev/posts/zh-hero-1771934646507-fan7x4.webp',
   'China Restaurant':'https://itin-dev.wanderlogstatic.com/freeImageSmall/9rqqVHZ5e7Hs9hiW8kKvpJnBqCTXFhF2',
   'Hongkong Imbiss':'https://img.restaurantguru.com/w550/h367/r361-Hongkong-Imbiss-interior-2025-02.jpg',
@@ -174,4 +182,4 @@ export const newsletters = [
   {name:'Saarbrücken 市政 Newsletter',cadence:'每周四',note:'城市新鲜事、活动与官方通知；不是纯餐饮，但适合发现本地新动向。',url:'https://www.saarbruecken.de/rathaus/presse_und_online/newsletter'},
 ];
 
-export const mapUrl = (place: Place) => q(place.name);
+export const mapUrl = (place: Place) => place.maps ?? q(place.name);

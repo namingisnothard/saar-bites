@@ -59,6 +59,8 @@ export const weekdays: Record<Lang, string[]> = {
 };
 
 export const placeTranslations: Record<string, { en: [string,string]; de: [string,string] }> = {
+  'the bakery':{en:['Coffee · bakery · breakfast','Croissants, quiche and cakes · check Google Maps for hours'],de:['Café · Bäckerei · Frühstück','Croissants, Quiche und Kuchen · Öffnungszeiten auf Google Maps prüfen']},
+  'Bäckerei - Konditorei Erhard Heil':{en:['Bakery · pastry shop','Bread, apple fritters and cakes'],de:['Bäckerei · Konditorei','Brot, Apfelkrapfen und Kuchen']},
   'Café Bisous':{en:['Café · brunch','Photo menu · pancakes and avocado toast'],de:['Café · Brunch','Fotokarte · Pancakes und Avocado-Toast']},
   'Siam':{en:['Thai','Official menu · curries and crispy duck'],de:['Thailändisch','Offizielle Karte · Currys und knusprige Ente']},
   'F.A.K | Fresh Asian Kitchen':{en:['Asian fusion','Official Fresh Asian Kitchen menu'],de:['Asiatische Fusion','Offizielle Fresh-Asian-Kitchen-Karte']},
