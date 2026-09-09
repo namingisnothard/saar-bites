@@ -9,15 +9,21 @@ const json = (data: unknown, status = 200) => Response.json(data, { status, head
 
 export async function getReviews(request: Request, env: ReviewEnv) {
   const url = new URL(request.url);
+  if (url.searchParams.get('summary') === 'restaurants') {
+    try {
+      const result = await env.DB.prepare("SELECT place, COUNT(*) AS count, AVG(rating) AS average FROM reviews WHERE place NOT LIKE 'life:%' GROUP BY place").all();
+      return json({ summaries: result.results });
+    } catch { return json({ error: 'Ratings are temporarily unavailable' }, 503); }
+  }
   const place = url.searchParams.get('place');
-  if (!place || (place !== 'life:all' && place !== 'restaurants:all' && !validPlaces.has(place))) return json({ error: 'Invalid restaurant' }, 400);
+  if (!place || (place !== 'life:all' && place !== 'restaurants:all' && place !== 'community:all' && !validPlaces.has(place))) return json({ error: 'Invalid restaurant' }, 400);
   const offset = Number(url.searchParams.get('offset') || 0);
   if (!Number.isSafeInteger(offset) || offset < 0) return json({ error: 'Invalid offset' }, 400);
   try {
     const { DB } = env;
     const allFinds = place === 'life:all';
-    const condition = place === 'restaurants:all' ? "place NOT LIKE ?" : allFinds ? "place LIKE ?" : 'place = ?';
-    const key = allFinds || place === 'restaurants:all' ? 'life:%' : place;
+    const condition = place === 'community:all' ? 'place LIKE ?' : place === 'restaurants:all' ? "place NOT LIKE ?" : allFinds ? "place LIKE ?" : 'place = ?';
+    const key = place === 'community:all' ? '%' : allFinds || place === 'restaurants:all' ? 'life:%' : place;
     const [list, summary] = await DB.batch([
       DB.prepare(`SELECT id, place, rating, author, comment, photos, created_at FROM reviews WHERE ${condition} ORDER BY created_at DESC, id DESC LIMIT 20 OFFSET ?`).bind(key, offset),
       DB.prepare(`SELECT COUNT(*) AS count, AVG(rating) AS average FROM reviews WHERE ${condition}`).bind(key),

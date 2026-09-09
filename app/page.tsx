@@ -5,6 +5,7 @@ import { mapImages, mapUrl, newsletters, openingNews, places, type Place } from 
 import { newsletterTranslations, openingTranslations, placeTranslations, ui, weekdays, type Lang } from './i18n';
 import MapView from './MapView';
 import Reviews from './Reviews';
+import { reviewApiUrl } from './lib/review-api';
 import Link from 'next/link';
 
 type Status = { state: 'open' | 'closed' | 'unknown'; label: string; detail: string; closeIn?: number; openIn?: number; opensAt?: string };
@@ -81,6 +82,18 @@ export default function Home() {
   const [dicePlace,setDicePlace] = useState<Place | null>(null);
   const [rolling,setRolling] = useState(false);
   const [reviewPlace,setReviewPlace] = useState<string | null>(null);
+  const [siteScores,setSiteScores] = useState<Record<string,{count:number;average:number}>>({});
+  const [scoresStatus,setScoresStatus] = useState<'loading'|'ready'|'error'>('loading');
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(reviewApiUrl('/api/reviews?summary=restaurants'), {cache:'no-store',signal:controller.signal})
+      .then(async response => { if (!response.ok) throw new Error(); return response.json() as Promise<{summaries:{place:string;count:number;average:number}[]}>; })
+      .then((data:{summaries:{place:string;count:number;average:number}[]}) => {
+        if (controller.signal.aborted) return;
+        setSiteScores(Object.fromEntries(data.summaries.map(item=>[item.place,item]))); setScoresStatus('ready');
+      }).catch(() => { if (!controller.signal.aborted) setScoresStatus('error'); });
+    return () => controller.abort();
+  },[reviewPlace]);
 
   useEffect(() => {
     const update = () => setNow(new Date());
@@ -304,9 +317,14 @@ export default function Home() {
               <h3>{place.name}</h3><p>{placeCopy(place)[0]} · {place.address}</p>
               <div className="source-list">{place.sources.map(source=><b key={source}>{sourceCopy(source)}</b>)}</div>
             </div>
-            <div className="row-score"><strong>{place.rating}</strong><span>★ Google</span><small>{place.reviews.toLocaleString(timeLocale)} {t('reviewCount')}</small></div>
+            <div className="row-scores"><div className="row-score"><strong>{place.rating}</strong><span>★ Google</span><small>{place.reviews.toLocaleString(timeLocale)} {t('reviewCount')}</small></div>
+            <button type="button" className="row-score row-site-score" onClick={()=>setReviewPlace(place.name)} aria-label={`${place.name} · ${lang === 'en' ? 'Community reviews' : lang === 'de' ? 'Community-Bewertungen' : '本站评分与评论'}`}>
+              <strong>{scoresStatus === 'ready' && siteScores[place.name] ? siteScores[place.name].average.toFixed(1) : '—'}</strong>
+              <span>★ {lang === 'en' ? 'This site' : lang === 'de' ? 'Diese Seite' : '本站评分'}</span>
+              <small>{scoresStatus === 'loading' ? (lang === 'en' ? 'Loading…' : lang === 'de' ? 'Lädt…' : '加载中…') : scoresStatus === 'error' ? (lang === 'en' ? 'View reviews ↗' : lang === 'de' ? 'Bewertungen ↗' : '查看评论 ↗') : `${siteScores[place.name]?.count || 0} ${t('reviewCount')} ↗`}</small>
+            </button></div>
             <div className="row-menu"><span>MENU</span><p>{placeCopy(place)[1]}</p></div>
-            <div className="row-actions"><button type="button" className="review-open" onClick={() => setReviewPlace(place.name)}>{lang === 'en' ? 'Rate & review' : lang === 'de' ? 'Bewerten' : '评分 / 评论'}</button><a className="menu-button" href={menuUrl(place)} target="_blank" rel="noreferrer">{t('menu')}</a><a href={mapUrl(place)} target="_blank" rel="noreferrer">{t('maps')}</a></div>
+            <div className="row-actions"><a className="menu-button" href={menuUrl(place)} target="_blank" rel="noreferrer">{t('menu')}</a><a href={mapUrl(place)} target="_blank" rel="noreferrer">{t('maps')}</a></div>
           </article>)}
         </div>}
         {!shown.length && <div className="empty">{t('empty')}</div>}

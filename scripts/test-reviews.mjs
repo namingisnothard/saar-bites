@@ -31,6 +31,10 @@ try {
   const anon = restaurantReviews.reviews.find(item=>item.id===ids[0]);
   assert.equal(anon.author,null); assert.equal(anon.rating,4);
   assert.ok(!restaurantReviews.reviews.some(item=>item.id===ids[1]));
+  const summaries = await (await fetch(`${base}/api/reviews?summary=restaurants`)).json();
+  const summary = summaries.summaries.find(item=>item.place===restaurant);
+  assert.equal(summary.count,restaurantReviews.count); assert.equal(summary.average,restaurantReviews.average);
+  assert.ok(summaries.summaries.every(item=>!item.place.startsWith('life:')));
   const shopReviews = await list(store);
   const signed = shopReviews.reviews.find(item=>item.id===ids[1]);
   assert.equal(signed.author,'Test author'); assert.equal(signed.photos.length,1);
@@ -39,6 +43,7 @@ try {
   assert.deepEqual(Buffer.from(await photo.arrayBuffer()),png);
   const feed = await list('life:all'); assert.ok(feed.reviews.some(item=>item.id===ids[1])); assert.ok(!feed.reviews.some(item=>item.id===ids[0]));
   const latest = await list('restaurants:all'); assert.ok(latest.reviews.some(item=>item.id===ids[0])); assert.ok(!latest.reviews.some(item=>item.id===ids[1])); assert.ok(latest.reviews.every(item=>!item.place.startsWith('life:'))); for(let i=1;i<latest.reviews.length;i++) assert.ok(latest.reviews[i-1].created_at>=latest.reviews[i].created_at);
+  const community = await list('community:all'); assert.ok(community.reviews.some(item=>item.id===ids[0])); assert.ok(community.reviews.some(item=>item.id===ids[1])); for(let i=1;i<community.reviews.length;i++) assert.ok(community.reviews[i-1].created_at>=community.reviews[i].created_at);
   const repeat = await list(store); assert.ok(repeat.reviews.some(item=>item.id===ids[1]));
   assert.equal((await fetch(`${base}/api/review-photos/not-valid`)).status,404);
   console.log('PASS: validation, anonymous and signed posts, photo bytes, restaurant/shop isolation, life feed, repeated reads.');
