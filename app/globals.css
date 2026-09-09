@@ -346,3 +346,14 @@ footer p { max-width:680px; margin:0; color:#b9c1bc; font-size:10px; line-height
 .review-upload-status { display:grid; gap:8px; margin:16px 0; font-size:14px; }
 .review-upload-status progress { width:100%; height:8px; accent-color:var(--ink); }
 @media(max-width:680px) { .review-form{grid-row:1;border-top:0;border-bottom:1px solid var(--ink)}.review-dialog{max-height:94dvh}.review-header{position:sticky;top:0;z-index:1} }
+
+.latest-heading { background:var(--lime); }
+.latest-feed { max-width:1000px; margin:0 auto; padding:32px clamp(20px,4vw,48px) 64px; }
+.latest-count { margin:0 0 24px; font-size:14px; color:#536057; }
+.latest-list { display:grid; gap:24px; }
+.latest-entry .life-shop-link { font-size:clamp(22px,3vw,30px); overflow-wrap:anywhere; }
+.latest-entry .review-stars { margin-top:12px; }
+.latest-entry .review-photo-grid { max-width:720px; }
+.latest-page button:disabled { opacity:.5; cursor:wait; }
+.life-nav>div { flex-wrap:wrap; }
+@media(max-width:580px) { .latest-entry .review-byline { flex-direction:column; gap:4px; }.latest-entry{padding:20px}.latest-entry .review-secondary{width:100%;line-height:1.5} }

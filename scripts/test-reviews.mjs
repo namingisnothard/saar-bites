@@ -38,6 +38,7 @@ try {
   assert.equal(photo.status,200); assert.equal(photo.headers.get('content-type'),'image/png');
   assert.deepEqual(Buffer.from(await photo.arrayBuffer()),png);
   const feed = await list('life:all'); assert.ok(feed.reviews.some(item=>item.id===ids[1])); assert.ok(!feed.reviews.some(item=>item.id===ids[0]));
+  const latest = await list('restaurants:all'); assert.ok(latest.reviews.some(item=>item.id===ids[0])); assert.ok(!latest.reviews.some(item=>item.id===ids[1])); assert.ok(latest.reviews.every(item=>!item.place.startsWith('life:'))); for(let i=1;i<latest.reviews.length;i++) assert.ok(latest.reviews[i-1].created_at>=latest.reviews[i].created_at);
   const repeat = await list(store); assert.ok(repeat.reviews.some(item=>item.id===ids[1]));
   assert.equal((await fetch(`${base}/api/review-photos/not-valid`)).status,404);
   console.log('PASS: validation, anonymous and signed posts, photo bytes, restaurant/shop isolation, life feed, repeated reads.');

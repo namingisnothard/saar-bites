@@ -213,7 +213,7 @@ export default function Home() {
       <nav className="nav-shell">
         <a className="brand" href="#top"><span className="brand-mark">SB</span><span>SAAR BITES</span></a>
         <div className="nav-links"><a href="#radar">{t('nowNav')}</a><a href="#dice">{t('diceNav')}</a><a href="#places">{t('savedNav')}</a><a href="#new">{t('newsNav')}</a></div>
-        <div className="nav-tools"><Link className="life-nav-link" href="/life">{lang === 'en' ? 'Saar Life ↗' : lang === 'de' ? 'Saar-Leben ↗' : '萨尔生活 ↗'}</Link><div className="language-switch" role="group" aria-label={t('language')}>{([['mix','ZN/EN'],['en','EN'],['de','DE']] as [Lang,string][]).map(([value,label])=><button key={value} className={lang===value?'active':''} onClick={()=>chooseLanguage(value)} aria-pressed={lang===value}>{label}</button>)}</div><div className="nav-meta"><span className="live-dot" />{t('locale')} {localTime}</div></div>
+        <div className="nav-tools"><Link className="life-nav-link" href="/reviews">{lang === 'en' ? 'Latest reviews' : lang === 'de' ? 'Neue Bewertungen' : '最新打卡'}</Link><Link className="life-nav-link" href="/life">{lang === 'en' ? 'Saar Life ↗' : lang === 'de' ? 'Saar-Leben ↗' : '萨尔生活 ↗'}</Link><div className="language-switch" role="group" aria-label={t('language')}>{([['mix','ZN/EN'],['en','EN'],['de','DE']] as [Lang,string][]).map(([value,label])=><button key={value} className={lang===value?'active':''} onClick={()=>chooseLanguage(value)} aria-pressed={lang===value}>{label}</button>)}</div><div className="nav-meta"><span className="live-dot" />{t('locale')} {localTime}</div></div>
       </nav>
 
       <section className="hero" id="top">
