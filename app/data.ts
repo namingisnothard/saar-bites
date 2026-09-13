@@ -18,6 +18,9 @@ const d = (...days: Interval[][]): Interval[][] => days;
 const q = (name: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name} Saarbrücken`)}`;
 
 export const places: Place[] = [
+  // Added 2026-09-14: official address/menu/hours; Google rating snapshot via https://wanderlog.com/ru/place/details/2700155/cafe-especial-saarbr%C3%BCcken.
+  // The official site gives no fixed closing time, so live opening status remains unconfirmed.
+  { name:'CAFE ESPECIAL Saarbrücken', category:'墨西哥菜 · Tex-Mex · 鸡尾酒', group:'restaurant', rating:4.3, reviews:2411, sources:['Saarbrücken'], address:'Kronenstraße 1, 66111 Saarbrücken', website:'https://www.cafe-especial.com/sarrebruck/', maps:'https://www.google.com/maps/place/CAFE+ESPECIAL+Saarbr%C3%BCcken/data=!4m6!3m5!1s0x4795b41cdfaeeda7:0x27a61a0c7e539a4!8m2!3d49.2321235!4d6.9958925!16s%2Fg%2F1tj7c_6t', menu:'https://www.cafe-especial.com/druckversion/saarbruecken-speisekarte/', menuNote:'官网菜单 · Tacos、Fajitas 与鸡尾酒 · 周一至周六 11:30 起，周日及节假日 12:00 起；打烊时间不固定', schedule:null },
   // Listing snapshots: Wanderlog, checked 2026-09-09. the bakery's hours differ across sources.
   { name:'the bakery', category:'咖啡 · 烘焙 · 早餐', group:'bakery', rating:4.6, reviews:656, sources:['Saarbrücken','Café'], address:'Gerberstraße 7, 66111 Saarbrücken', website:'https://www.facebook.com/thebakery.saarbruecken', maps:'https://www.google.com/maps?cid=4958234852955040279', menuNote:'可颂、Quiche 与蛋糕 · 营业时间请查看 Google Maps', schedule:null },
   { name:'Bäckerei - Konditorei Erhard Heil', category:'面包房 · 糕点', group:'bakery', rating:4.4, reviews:437, sources:['Saarbrücken'], address:'Bahnhofstraße 101A, 66111 Saarbrücken', website:'https://www.facebook.com/heilbackerei', maps:'https://www.google.com/maps?cid=7006462121478122254', menuNote:'面包、Apfelkrapfen 与蛋糕', schedule:d([], ...Array.from({length:6},()=>[['06:00','18:00']] as Interval[])) },
@@ -69,6 +72,7 @@ export const places: Place[] = [
 ];
 
 export const placeCoordinates: Record<string, [number, number]> = {
+  'CAFE ESPECIAL Saarbrücken':[49.2321235,6.9958925],
   'the bakery':[49.2338311,6.9964672],
   'Bäckerei - Konditorei Erhard Heil':[49.2378053,6.9912288],
   'Café Bisous':[49.2302033,7.0058480],
@@ -119,6 +123,7 @@ export const placeCoordinates: Record<string, [number, number]> = {
 };
 
 export const mapImages: Record<string, string> = {
+  'CAFE ESPECIAL Saarbrücken':'https://itin-dev.wanderlogstatic.com/freeImageSmall/r8ue532xH4t4EQzMCMYQbX7ucueqP9a2',
   'the bakery':'https://itin-dev.wanderlogstatic.com/freeImageSmall/E8ZO78ORHfGHzXSOqAfKNJUlAhFGusyG',
   'Bäckerei - Konditorei Erhard Heil':'https://itin-dev.wanderlogstatic.com/freeImageSmall/kGkpNAIxjsBIHGo2cwCLUPJjCzSCgplT',
   'Dang Dang':'https://pub-b2129fef1d2d4d4591d29f2baa8a348e.r2.dev/posts/zh-hero-1771934646507-fan7x4.webp',
@@ -168,10 +173,14 @@ export const mapImages: Record<string, string> = {
   'BABAQ':'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkCsTUubptfsat90zVzHIUcbgwkn3cQhRL5u6u8ljo9gCntzWA4ARn6cUW3QqrxBOCvG1uUqJzXNr_9H5L0qwsbrTvDqfcgotEk2UqytvyWS0HRudIuOkY7a9pA8U_1bQN-kMD37cpP_b0=w408-h724-k-no',
 };
 
+// Opening reports reviewed 2026-09-14; each item links to its supporting source.
 export const openingNews = [
-  {date:'12 SEP 2026',state:'即将开业',name:'Why Not Sushi',category:'日式 · Sushi',address:'Bahnhofstraße 58, 66111 Saarbrücken',note:'据开业资讯网站预告，计划 9 月 12 日开业；出发前请向店家确认日期。',url:'https://www.neueroeffnung.info/saarbruecken/why-not-sushi-restaurant'},
-  {date:'05 SEP 2026',state:'重开待确认',name:'Halbmond Restaurant',category:'阿拉伯 · Café · Terrasse',address:'Fröschengasse 18, 66111 Saarbrücken',note:'此前预告 9 月 5 日重开，但官网仍有未注明月份的休假通知；截至 9 月 9 日尚无法确认，建议先联系店家。',url:'https://www.halbmondrestaurant.de/'},
+  {date:'SEP 2026',state:'即将开业 · 日期待定',name:'Le Flâneur',category:'法式 · Bistro',address:'Sankt-Johanner-Markt 7–9, 66111 Saarbrücken',note:'据开业资讯网站，预计在 9 月 21 日起的一周开业，具体日期未定；入驻原 Sausalitos，主打法式与本地风味。',url:'https://www.neueroeffnung.info/saarbruecken/le-flaneur-franzoesisches-bistro-restaurant'},
+  {date:'12 SEP 2026',state:'开业待确认',name:'Why Not Sushi',category:'日式 · Sushi',address:'Bahnhofstraße 58, 66111 Saarbrücken',note:'开业资讯网站列出 9 月 12 日开业；截至 9 月 14 日尚未找到店家实际开业确认，出发前请先联系。',url:'https://www.neueroeffnung.info/saarbruecken/why-not-sushi-restaurant'},
+  {date:'05 SEP 2026',state:'重开待确认',name:'Halbmond Restaurant',category:'阿拉伯 · Café · Terrasse',address:'Fröschengasse 18, 66111 Saarbrücken',note:'此前以 9 月 5 日为重开目标，并可能延至 9 月 12 日；截至 9 月 14 日官网仍有未注明月份的休假通知，实际重开待确认。',url:'https://www.halbmondrestaurant.de/'},
+  {date:'01 SEP 2026',state:'新店',name:'Sneaky',category:'街头小吃 · Burger · Tacos',address:'Kaltenbachstraße 3, 66111 Saarbrücken',note:'开业资讯网站 9 月 12 日更新确认于 9 月 1 日开业；Kalinski 团队新店，提供汉堡、Tacos、冰淇淋与奶昔外带。',url:'https://www.neueroeffnung.info/saarbruecken/sneaky-street-food-laden'},
   {date:'07 AUG 2026',state:'新店',name:'Amidos & Helmi',category:'突尼斯 · 地中海 · Burger',address:'Mainzer Straße 102, 66121 Saarbrücken',note:'官网公布 8 月 7 日开业，主打突尼斯家常菜、Couscous 与 Grill/Burger。',url:'https://amidos-helmi.de/'},
+  {date:'01 AUG 2026',state:'新店资讯',name:'Berliner Döner by Kemo',category:'Döner · 快餐',address:'Bergstraße 68, 66115 Saarbrücken',note:'开业资讯网站列出 8 月 1 日开业，位于 Burbach 的 Döner 小店；营业详情请向店家确认。',url:'https://www.neueroeffnung.info/saarbruecken/berliner-doener-by-kemo'},
   {date:'07 JUL 2026',state:'夏季新店',name:'Pasteria al Dente',category:'意式 · Pasta',address:'Sankt-Johanner-Markt 22, 66111 Saarbrücken',note:'据开业资讯网站，原定春季的开业计划因装修延期至 7 月 7 日；位于 Stengelbrunnen 对面。',url:'https://www.neueroeffnung.info/saarbruecken/pasteria-al-dente'},
   {date:'15 JUN 2026',state:'夏季新店',name:'Schnitzery',category:'Schnitzel · 快餐',address:'Berliner Promenade 18, 66111 Saarbrücken',note:'开业资讯网站于 7 月确认，这家 Berliner Promenade 新店已在 6 月 15 日开业。',url:'https://www.neueroeffnung.info/saarbruecken/schnitzery_6'},
 ];
