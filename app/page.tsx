@@ -165,7 +165,7 @@ export default function Home() {
     return list.sort((a,b) => {
       if (sort === 'site-rating' || sort === 'site-reviews') return compareCommunity(a.place.name,b.place.name,siteScores,sort);
       if (sort === 'rating') return b.place.rating - a.place.rating;
-      if (sort === 'reviews') return b.place.reviews - a.place.reviews;
+      if (sort === 'reviews') return (b.place.reviews ?? -1) - (a.place.reviews ?? -1);
       const order = {open:0,unknown:1,closed:2};
       return order[a.status.state] - order[b.status.state] || b.place.rating - a.place.rating;
     });
@@ -272,7 +272,7 @@ export default function Home() {
         <div className="recommend-grid">
           {recommendations.map(({place,status},index)=><article className="recommend-card" key={place.name}>
             <div className="recommend-number">0{index+1}</div><div className="status open"><span/>{status.label} · {status.detail}</div><h3>{place.name}</h3><p>{placeCopy(place)[0]}</p>
-            <div className="recommend-bottom"><span>★ {place.rating} · {place.reviews.toLocaleString(timeLocale)} {t('reviews')}</span><a href={mapUrl(place)} target="_blank" rel="noreferrer">{t('openMap')}</a></div>
+            <div className="recommend-bottom"><span>★ {place.rating}{place.reviews !== null && <> · {place.reviews.toLocaleString(timeLocale)} {t('reviews')}</>}</span><a href={mapUrl(place)} target="_blank" rel="noreferrer">{t('openMap')}</a></div>
           </article>)}
           {!recommendations.length && <p className="empty">{t('noOpen')}</p>}
         </div>
@@ -311,7 +311,7 @@ export default function Home() {
           {shown.map(({place,status},index)=><article className="place-row" key={place.name}>
             <div className={`row-index tone-${index%4}`}>{String(index+1).padStart(2,'0')}</div>
             <a className="row-photo" href={mapUrl(place)} target="_blank" rel="noreferrer" aria-label={`在 Google Maps 查看 ${place.name}`}>
-              <img src={mapImages[place.name]} alt={`${place.name} · ${t('photo')}`} loading="lazy" referrerPolicy="no-referrer" />
+              <img src={mapImages[place.name]} alt={place.name} loading="lazy" referrerPolicy="no-referrer" />
               <span>{place.sources.includes('推荐补充')?t('recommendPhoto'):t('photo')}</span>
             </a>
             <div className="row-main">
@@ -319,7 +319,7 @@ export default function Home() {
               <h3>{place.name}</h3><p>{placeCopy(place)[0]} · {place.address}</p>
               <div className="source-list">{place.sources.map(source=><b key={source}>{sourceCopy(source)}</b>)}</div>
             </div>
-            <div className="row-scores"><div className="row-score"><strong>{place.rating}</strong><span>★ Google</span><small>{place.reviews.toLocaleString(timeLocale)} {t('reviewCount')}</small></div>
+            <div className="row-scores"><div className="row-score"><strong>{place.rating}</strong><span>★ Google</span><small>{place.reviews !== null ? `${place.reviews.toLocaleString(timeLocale)} ${t('reviewCount')}` : t('unknown')}</small></div>
             <button type="button" className="row-score row-site-score" onClick={()=>setReviewPlace(place.name)} aria-label={`${place.name} · ${lang === 'en' ? 'Community reviews' : lang === 'de' ? 'Community-Bewertungen' : '本站评分与评论'}`}>
               <strong>{scoresStatus === 'ready' && siteScores[place.name] ? siteScores[place.name].average.toFixed(1) : '—'}</strong>
               <span>★ {lang === 'en' ? 'This site' : lang === 'de' ? 'Diese Seite' : '本站评分'}</span>

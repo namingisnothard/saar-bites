@@ -4,7 +4,7 @@ export type Place = {
   category: string;
   group: 'cafe' | 'restaurant' | 'bakery' | 'dessert';
   rating: number;
-  reviews: number;
+  reviews: number | null;
   sources: string[];
   address: string;
   website?: string;
@@ -18,6 +18,12 @@ const d = (...days: Interval[][]): Interval[][] => days;
 const q = (name: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name} Saarbrücken`)}`;
 
 export const places: Place[] = [
+  // Added 2026-09-15. Hours/menu: official sites. Rating snapshots: Wanderlog
+  // https://wanderlog.com/place/details/2700258/osaka-restaurant
+  // https://wanderlog.com/sv/list/geoCategory/466832/best-asian-food-in-saarbrucken
+  // MORAK's Google review count is unavailable; do not substitute another platform's count.
+  { name:'Osaka Restaurant', category:'日式 · Sushi', group:'restaurant', rating:4.6, reviews:1379, sources:['推荐补充'], address:'Dudweilerstraße 1, 66111 Saarbrücken', website:'https://www.sushi-saarbruecken.de/', maps:'https://www.google.com/maps/place/Osaka+Restaurant/data=!4m6!3m5!1s0x4795b402a9bcea05:0xf977a751f59e23ba!8m2!3d49.2350272!4d6.9949208!16s%2Fg%2F1tfjdgy6', menu:'https://www.sushi-saarbruecken.de/produkt-kategorie/menus/', menuNote:'官网菜单 · Sushi、Gyoza 与日式料理', schedule:d([['18:00','23:00']],[['12:00','15:00'],['18:00','23:00']],[],[['12:00','15:00'],['18:00','23:00']],[['12:00','15:00'],['18:00','23:00']],[['12:00','15:00'],['18:00','23:00']],[['12:00','15:00'],['18:00','23:00']]) },
+  { name:'MORAK', category:'韩国菜 · Korean BBQ', group:'restaurant', rating:4.4, reviews:null, sources:['推荐补充'], address:'Saaruferstraße 12, 66117 Saarbrücken', website:'https://morak.online/', maps:'https://www.google.com/maps/place/MORAK/data=!4m6!3m5!1s0x4795b5004d42cbf7:0xfc682a11b6ee68fe!8m2!3d49.2353783!4d6.9905317!16s%2Fg%2F11yd71bytg', menu:'https://morak.online/menu', menuNote:'官网菜单 · 韩式街头小吃、传统料理与桌边烤肉', schedule:d([['12:00','15:00'],['18:00','22:00']],[['17:30','22:00']],[['17:30','22:00']],[['17:30','22:00']],[['12:00','15:00'],['18:00','22:00']],[['12:00','15:00'],['18:00','23:00']],[['12:00','15:00'],['18:00','23:00']]) },
   // Added 2026-09-14: official address/menu/hours; Google rating snapshot via https://wanderlog.com/ru/place/details/2700155/cafe-especial-saarbr%C3%BCcken.
   // The official site gives no fixed closing time, so live opening status remains unconfirmed.
   { name:'CAFE ESPECIAL Saarbrücken', category:'墨西哥菜 · Tex-Mex · 鸡尾酒', group:'restaurant', rating:4.3, reviews:2411, sources:['Saarbrücken'], address:'Kronenstraße 1, 66111 Saarbrücken', website:'https://www.cafe-especial.com/sarrebruck/', maps:'https://www.google.com/maps/place/CAFE+ESPECIAL+Saarbr%C3%BCcken/data=!4m6!3m5!1s0x4795b41cdfaeeda7:0x27a61a0c7e539a4!8m2!3d49.2321235!4d6.9958925!16s%2Fg%2F1tj7c_6t', menu:'https://www.cafe-especial.com/druckversion/saarbruecken-speisekarte/', menuNote:'官网菜单 · Tacos、Fajitas 与鸡尾酒 · 周一至周六 11:30 起，周日及节假日 12:00 起；打烊时间不固定', schedule:null },
@@ -60,7 +66,7 @@ export const places: Place[] = [
   { name:'BABAQ', category:'Döner · 土耳其', group:'restaurant', rating:4.3, reviews:306, sources:['Starred'], address:'Bahnhofstraße 43A, 66111 Saarbrücken', website:'http://www.babaq.de/', menuNote:'官网/Google 菜单 · Döner 与 Grill', schedule:d([], [['11:30','22:00']],[['11:30','22:00']],[['11:30','22:00']],[['11:30','22:00']],[['11:30','25:00']],[['11:30','25:00']]) },
   { name:'Cafe Extrablatt Saarbrücken', category:'全天咖啡 · 早餐 · Bistro', group:'cafe', rating:4.1, reviews:253, sources:['推荐补充','Café'], address:'Bahnhofstraße 18, 66111 Saarbrücken', website:'https://cafe-extrablatt.de/standorte/details/cafe-extrablatt-saarbruecken', menu:'https://cafe-extrablatt.de/fileadmin/pdf/Speisekarten/Cafe-Extrablatt-Saarbruecken-Speisekarte-Web.pdf', menuNote:'官网菜单 · 早餐自助、Burger、蛋糕与鸡尾酒', schedule:d(...Array.from({length:7},()=>[['09:00','25:00']] as Interval[])) },
   { name:'Galicia Tapas', category:'Galicia · Tapas · 海鲜', group:'restaurant', rating:4.8, reviews:567, sources:['推荐补充'], address:'Bliesweg 2, 66113 Saarbrücken', website:'https://galicia-tapas.de/', menuNote:'官网菜单 · Galician Tapas、海鲜与分享套餐', schedule:d([['12:00','14:30'],['17:30','22:00']],[['17:30','22:30']],[],[['17:30','22:30']],[['17:30','22:30']],[['17:30','23:00']],[['17:30','23:00']]) },
-  { name:'Flammerie Alt-Saarbrücken', category:'Flammkuchen · 法式', group:'restaurant', rating:4.8, reviews:844, sources:['推荐补充'], address:'Neumarkt 9, 66117 Saarbrücken', website:'http://www.flammerie-alt-saarbruecken.de/', menuNote:'官网菜单 · 经典、素食与纯素 Flammkuchen', schedule:d([['12:00','21:00']],[],[['17:00','22:00']],[['17:00','22:00']],[['17:00','22:00']],[['17:00','22:00']],[['17:00','22:00']]) },
+  { name:'Flammerie Alt-Saarbrücken', category:'Flammkuchen · 法式', group:'restaurant', rating:4.8, reviews:844, sources:['推荐补充'], address:'Neumarkt 9, 66117 Saarbrücken', website:'http://www.flammerie-alt-saarbruecken.de/', maps:'https://www.google.com/maps/place/Flammerie+Alt-Saarbr%C3%BCcken/data=!4m6!3m5!1s0x4795b4024b8386d1:0x965b8e0ab908f822!8m2!3d49.2329561!4d6.9901929!16s%2Fg%2F11d_cxzd65', menuNote:'官网菜单 · 经典、素食与纯素 Flammkuchen', schedule:d([['12:00','21:00']],[],[['17:00','22:00']],[['17:00','22:00']],[['17:00','22:00']],[['17:00','22:00']],[['17:00','22:00']]) },
   { name:'Café Batela', category:'早餐 · Brunch · 咖啡', group:'cafe', rating:4.7, reviews:482, sources:['推荐补充','Café'], address:'Mainzer Str. 4, 66111 Saarbrücken', website:'https://cafe-batela.de/', menuNote:'官网菜单 · 早餐、Brunch 与精品咖啡', schedule:d([['09:30','16:00']],[['09:00','16:00']],[['09:00','16:00']],[['09:00','16:00']],[['09:00','16:00']],[['09:00','16:00']],[['09:30','16:00']]) },
   { name:'Café am Steg', category:'咖啡 · 早餐 · 烘焙', group:'cafe', rating:4.6, reviews:107, sources:['推荐补充','Café'], address:'Am Steg 3, 66111 Saarbrücken', website:'https://www.cafe-am-steg.de/', menuNote:'官网菜单 · 咖啡、早餐、Panini 与每日烘焙', schedule:d([['10:00','18:00']],[],[['10:00','18:00']],[['10:00','18:00']],[['10:00','18:00']],[['10:00','18:00']],[['10:00','18:00']]) },
   { name:'Le Comptoir', category:'法式 · Fine dining', group:'restaurant', rating:4.8, reviews:173, sources:['推荐补充'], address:'Försterstraße 15, 66111 Saarbrücken', website:'https://www.lecomptoir-saarbruecken.de/', menuNote:'官网信息 · 精致法餐与季节菜单', schedule:d([],[],[['18:30','23:30']],[['18:30','23:30']],[['18:30','23:30']],[['18:30','23:30']],[['18:30','23:30']]) },
@@ -72,6 +78,8 @@ export const places: Place[] = [
 ];
 
 export const placeCoordinates: Record<string, [number, number]> = {
+  'Osaka Restaurant':[49.2350272,6.9949208],
+  'MORAK':[49.2353783,6.9905317],
   'CAFE ESPECIAL Saarbrücken':[49.2321235,6.9958925],
   'the bakery':[49.2338311,6.9964672],
   'Bäckerei - Konditorei Erhard Heil':[49.2378053,6.9912288],
@@ -111,7 +119,7 @@ export const placeCoordinates: Record<string, [number, number]> = {
   'BABAQ':[49.2353044,6.9939054],
   'Cafe Extrablatt Saarbrücken':[49.2336900,6.9957330],
   'Galicia Tapas':[49.2507383,6.9627664],
-  'Flammerie Alt-Saarbrücken':[49.2329939,6.9901858],
+  'Flammerie Alt-Saarbrücken':[49.2329561,6.9901929],
   'Café Batela':[49.2319602,6.9991573],
   'Café am Steg':[49.2355663,6.9928143],
   'Le Comptoir':[49.2358206,6.9990016],
@@ -123,6 +131,9 @@ export const placeCoordinates: Record<string, [number, number]> = {
 };
 
 export const mapImages: Record<string, string> = {
+  // Photos from the restaurants' official websites, checked 2026-09-15.
+  'Osaka Restaurant':'https://www.sushi-saarbruecken.de/erelreew/2026/07/20260630_0008.jpg',
+  'MORAK':'https://morak.online/_assets/media/d3ee022828a717a4ea78d192ac632e66.jpg',
   'CAFE ESPECIAL Saarbrücken':'https://itin-dev.wanderlogstatic.com/freeImageSmall/r8ue532xH4t4EQzMCMYQbX7ucueqP9a2',
   'the bakery':'https://itin-dev.wanderlogstatic.com/freeImageSmall/E8ZO78ORHfGHzXSOqAfKNJUlAhFGusyG',
   'Bäckerei - Konditorei Erhard Heil':'https://itin-dev.wanderlogstatic.com/freeImageSmall/kGkpNAIxjsBIHGo2cwCLUPJjCzSCgplT',
@@ -173,11 +184,11 @@ export const mapImages: Record<string, string> = {
   'BABAQ':'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkCsTUubptfsat90zVzHIUcbgwkn3cQhRL5u6u8ljo9gCntzWA4ARn6cUW3QqrxBOCvG1uUqJzXNr_9H5L0qwsbrTvDqfcgotEk2UqytvyWS0HRudIuOkY7a9pA8U_1bQN-kMD37cpP_b0=w408-h724-k-no',
 };
 
-// Opening reports reviewed 2026-09-14; each item links to its supporting source.
+// Opening reports reviewed 2026-09-15; each item links to its supporting source.
 export const openingNews = [
   {date:'SEP 2026',state:'即将开业 · 日期待定',name:'Le Flâneur',category:'法式 · Bistro',address:'Sankt-Johanner-Markt 7–9, 66111 Saarbrücken',note:'据开业资讯网站，预计在 9 月 21 日起的一周开业，具体日期未定；入驻原 Sausalitos，主打法式与本地风味。',url:'https://www.neueroeffnung.info/saarbruecken/le-flaneur-franzoesisches-bistro-restaurant'},
-  {date:'12 SEP 2026',state:'开业待确认',name:'Why Not Sushi',category:'日式 · Sushi',address:'Bahnhofstraße 58, 66111 Saarbrücken',note:'开业资讯网站列出 9 月 12 日开业；截至 9 月 14 日尚未找到店家实际开业确认，出发前请先联系。',url:'https://www.neueroeffnung.info/saarbruecken/why-not-sushi-restaurant'},
-  {date:'05 SEP 2026',state:'重开待确认',name:'Halbmond Restaurant',category:'阿拉伯 · Café · Terrasse',address:'Fröschengasse 18, 66111 Saarbrücken',note:'此前以 9 月 5 日为重开目标，并可能延至 9 月 12 日；截至 9 月 14 日官网仍有未注明月份的休假通知，实际重开待确认。',url:'https://www.halbmondrestaurant.de/'},
+  {date:'12 SEP 2026',state:'开业待确认',name:'Why Not Sushi',category:'日式 · Sushi',address:'Bahnhofstraße 58, 66111 Saarbrücken',note:'开业资讯网站列出 9 月 12 日开业；截至 9 月 15 日尚未找到店家实际开业确认，出发前请先联系。',url:'https://www.neueroeffnung.info/saarbruecken/why-not-sushi-restaurant'},
+  {date:'05 SEP 2026',state:'重开待确认',name:'Halbmond Restaurant',category:'阿拉伯 · Café · Terrasse',address:'Fröschengasse 18, 66111 Saarbrücken',note:'此前以 9 月 5 日为重开目标，并可能延至 9 月 12 日；截至 9 月 15 日官网仍有未注明月份的休假通知，实际重开待确认。',url:'https://www.halbmondrestaurant.de/'},
   {date:'01 SEP 2026',state:'新店',name:'Sneaky',category:'街头小吃 · Burger · Tacos',address:'Kaltenbachstraße 3, 66111 Saarbrücken',note:'开业资讯网站 9 月 12 日更新确认于 9 月 1 日开业；Kalinski 团队新店，提供汉堡、Tacos、冰淇淋与奶昔外带。',url:'https://www.neueroeffnung.info/saarbruecken/sneaky-street-food-laden'},
   {date:'07 AUG 2026',state:'新店',name:'Amidos & Helmi',category:'突尼斯 · 地中海 · Burger',address:'Mainzer Straße 102, 66121 Saarbrücken',note:'官网公布 8 月 7 日开业，主打突尼斯家常菜、Couscous 与 Grill/Burger。',url:'https://amidos-helmi.de/'},
   {date:'01 AUG 2026',state:'新店资讯',name:'Berliner Döner by Kemo',category:'Döner · 快餐',address:'Bergstraße 68, 66115 Saarbrücken',note:'开业资讯网站列出 8 月 1 日开业，位于 Burbach 的 Döner 小店；营业详情请向店家确认。',url:'https://www.neueroeffnung.info/saarbruecken/berliner-doener-by-kemo'},
