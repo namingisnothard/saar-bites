@@ -73,6 +73,7 @@ export default function Home() {
   const [filter,setFilter] = useState('all');
   const [openOnly,setOpenOnly] = useState(false);
   const [sort,setSort] = useState('smart');
+  const [sortAscending,setSortAscending] = useState(false);
   const [lang,setLang] = useState<Lang>('mix');
   const [cuisine,setCuisine] = useState('all');
   const [selectedDay,setSelectedDay] = useState<number | null>(null);
@@ -163,13 +164,25 @@ export default function Home() {
       return matchesText && matchesFilter && matchesCuisine && matchesDay && (!openOnly || status.state === 'open');
     });
     return list.sort((a,b) => {
-      if (sort === 'site-rating' || sort === 'site-reviews') return compareCommunity(a.place.name,b.place.name,siteScores,sort);
-      if (sort === 'rating') return b.place.rating - a.place.rating;
-      if (sort === 'reviews') return (b.place.reviews ?? -1) - (a.place.reviews ?? -1);
+      const direction = sortAscending ? -1 : 1;
+      if (sort === 'name') return direction * b.place.name.localeCompare(a.place.name);
+      if (sort === 'site-rating' || sort === 'site-reviews') {
+        const hasA = (siteScores[a.place.name]?.count ?? 0) > 0;
+        const hasB = (siteScores[b.place.name]?.count ?? 0) > 0;
+        if (hasA !== hasB) return hasA ? -1 : 1;
+        return direction * compareCommunity(a.place.name,b.place.name,siteScores,sort);
+      }
+      if (sort === 'rating') return direction * (b.place.rating - a.place.rating);
+      if (sort === 'reviews') {
+        if (a.place.reviews === null || b.place.reviews === null) return a.place.reviews === b.place.reviews ? 0 : a.place.reviews === null ? 1 : -1;
+        return direction * (b.place.reviews - a.place.reviews);
+      }
       const order = {open:0,unknown:1,closed:2};
-      return order[a.status.state] - order[b.status.state] || b.place.rating - a.place.rating;
+      return direction * (order[a.status.state] - order[b.status.state] || b.place.rating - a.place.rating);
     });
-  }, [enriched,filter,cuisine,selectedDay,openOnly,query,sort,placeCopy,siteScores]);
+  }, [enriched,filter,cuisine,selectedDay,openOnly,query,sort,sortAscending,placeCopy,siteScores]);
+
+  const sortColumn = (key: string, label: string) => <button type="button" className={sort === key ? 'active' : ''} aria-pressed={sort === key} disabled={key.startsWith('site-') && scoresStatus !== 'ready'} onClick={() => { setSort(key); setSortAscending(sort === key ? !sortAscending : key === 'name'); }}>{label} <span aria-hidden="true">{sort === key ? (sortAscending ? '↑' : '↓') : '↕'}</span></button>;
 
   const suggestions = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -267,6 +280,48 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="places-section" id="places">
+        <div className="section-heading"><div><p className="eyebrow">{t('curated')}</p><h2>{t('allSaved')}</h2></div><div className="view-tools"><span>{shown.length} / {places.length} {t('placesUnit')}</span><div className="view-switch" role="group"><button className={view==='list'?'active':''} onClick={()=>setView('list')}>☷ {t('listView')}</button><button className={view==='map'?'active':''} onClick={()=>setView('map')}>⌖ {t('mapView')}</button></div></div></div>
+        <div className="filter-bar">
+          <div className="filter-chips">{filters.map(([value,label])=><button key={value} className={filter===value?'active':''} onClick={()=>setFilter(value)}>{label}</button>)}{selectedDay!==null&&<button className="day-filter-clear" onClick={()=>setSelectedDay(null)}>{weekdays[lang][selectedDay]} · {t('openOn')} ×</button>}</div>
+
+        </div>
+        <div className="cuisine-bar"><span>{t('cuisine')}</span><div className="cuisine-chips">{cuisineFilters.map(([value,label])=><button key={value} className={cuisine===value?'active':''} onClick={()=>setCuisine(value)}>{label}</button>)}</div></div>
+        {view === 'map' && <div className="map-shell"><div className="map-heading"><p>{t('mapHint')}</p><span>{shown.length} {t('mapPlaces')}</span></div><MapView entries={shown} categoryFor={categoryFor} openMapLabel={t('openMap')} /></div>}
+        {view === 'list' && <div className="place-list-scroll"><div className="place-list">
+          <div className="place-columns" aria-label={t('sort')}>
+            <span>#</span><span>{lang === 'en' ? 'Photo' : lang === 'de' ? 'Foto' : '照片'}</span>
+            <div>{sortColumn('name',lang === 'en' ? 'Restaurant' : lang === 'de' ? 'Restaurant' : '地点')}{sortColumn('smart',t('smart'))}</div>
+            <div className="score-columns"><div>{sortColumn('rating','★ Google')}{sortColumn('reviews',t('reviews'))}</div><div>{sortColumn('site-rating',lang === 'en' ? '★ Community' : lang === 'de' ? '★ Community' : '★ 本站')}{sortColumn('site-reviews',t('reviews'))}</div></div>
+            <span className="menu-column">{lang === 'de' ? 'Speisekarte' : lang === 'en' ? 'Menu' : '菜单'}</span><span>{lang === 'en' ? 'Links' : lang === 'de' ? 'Links' : '链接'}</span>
+          </div>
+          {shown.map(({place,status},index)=><article className="place-row" key={place.name}>
+            <div className={`row-index tone-${index%4}`}>{String(index+1).padStart(2,'0')}</div>
+            <a className="row-photo" href={mapUrl(place)} target="_blank" rel="noreferrer" aria-label={`在 Google Maps 查看 ${place.name}`}>
+              <img src={mapImages[place.name]} alt={place.name} loading="lazy" referrerPolicy="no-referrer" />
+              <span>{place.sources.includes('推荐补充')?t('recommendPhoto'):t('photo')}</span>
+            </a>
+            <div className="row-main">
+              <div className={`status ${status.state}`}><span/>{status.label} · {status.detail}</div>
+              <h3>{place.name}</h3><p>{placeCopy(place)[0]} · {place.address}</p>
+              <div className="source-list">{place.sources.map(source=><b key={source}>{sourceCopy(source)}</b>)}</div>
+            </div>
+            <div className="row-scores"><div className="row-score"><strong>{place.rating}</strong><span>★ Google</span><small>{place.reviews !== null ? `${place.reviews.toLocaleString(timeLocale)} ${t('reviewCount')}` : t('unknown')}</small></div>
+            <button type="button" className="row-score row-site-score" onClick={()=>setReviewPlace(place.name)} aria-label={`${place.name} · ${lang === 'en' ? 'Community reviews' : lang === 'de' ? 'Community-Bewertungen' : '本站评分与评论'}`}>
+              <strong>{scoresStatus === 'ready' && siteScores[place.name] ? siteScores[place.name].average.toFixed(1) : '—'}</strong>
+              <span>★ {lang === 'en' ? 'This site' : lang === 'de' ? 'Diese Seite' : '本站评分'}</span>
+              <small>{scoresStatus === 'loading' ? (lang === 'en' ? 'Loading…' : lang === 'de' ? 'Lädt…' : '加载中…') : scoresStatus === 'error' ? (lang === 'en' ? 'View reviews ↗' : lang === 'de' ? 'Bewertungen ↗' : '查看评论 ↗') : `${siteScores[place.name]?.count || 0} ${t('reviewCount')} ↗`}</small>
+            </button></div>
+            <div className="row-menu"><span>MENU</span><p>{placeCopy(place)[1]}</p></div>
+            <div className="row-actions"><a className="menu-button" href={menuUrl(place)} target="_blank" rel="noreferrer">{t('menu')}</a><a href={mapUrl(place)} target="_blank" rel="noreferrer">{t('maps')}</a></div>
+          </article>)}
+        </div></div>}
+        {!shown.length && <div className="empty">{t('empty')}</div>}
+      </section>
+
+      {reviewPlace && <Reviews key={reviewPlace} place={reviewPlace} lang={lang} onClose={() => setReviewPlace(null)} />}
+
+
       <section className="radar-section" id="radar">
         <div className="radar-heading"><div><p className="eyebrow">{t('rightNow')} · {localTime}</p><h2>{t('worthGoing')}</h2></div><button className={openOnly?'toggle active':'toggle'} onClick={()=>{setOpenOnly(!openOnly);document.querySelector('#places')?.scrollIntoView();}}><span/>{t('openOnly')}</button></div>
         <div className="recommend-grid">
@@ -298,41 +353,6 @@ export default function Home() {
           {dicePlace && diceStatus ? <><a className="dice-photo" href={mapUrl(dicePlace)} target="_blank" rel="noreferrer"><img src={mapImages[dicePlace.name]} alt={dicePlace.name} referrerPolicy="no-referrer" /><span>★ {dicePlace.rating}</span></a><div className="dice-result-body"><p>{t('diceResult')}</p><div className={`status ${diceStatus.state}`}><span/>{diceStatus.label} · {diceStatus.detail}</div><h3>{dicePlace.name}</h3><small>{placeCopy(dicePlace)[0]} · {dicePlace.address}</small><a href={mapUrl(dicePlace)} target="_blank" rel="noreferrer">{t('openMap')}</a></div></> : <div className="dice-placeholder"><span>⚄</span><p>{dicePool.length?t('roll'):t('diceEmpty')}</p></div>}
         </div>
       </section>
-
-      <section className="places-section" id="places">
-        <div className="section-heading"><div><p className="eyebrow">{t('curated')}</p><h2>{t('allSaved')}</h2></div><div className="view-tools"><span>{shown.length} / {places.length} {t('placesUnit')}</span><div className="view-switch" role="group"><button className={view==='list'?'active':''} onClick={()=>setView('list')}>☷ {t('listView')}</button><button className={view==='map'?'active':''} onClick={()=>setView('map')}>⌖ {t('mapView')}</button></div></div></div>
-        <div className="filter-bar">
-          <div className="filter-chips">{filters.map(([value,label])=><button key={value} className={filter===value?'active':''} onClick={()=>setFilter(value)}>{label}</button>)}{selectedDay!==null&&<button className="day-filter-clear" onClick={()=>setSelectedDay(null)}>{weekdays[lang][selectedDay]} · {t('openOn')} ×</button>}</div>
-          <div className="sort-wrap"><label>{t('sort')}</label><select value={sort} onChange={(e)=>setSort(e.target.value)}><option value="smart">{t('smart')}</option><option value="rating">{t('rating')}</option><option value="reviews">{t('reviewsSort')} · Google</option><option value="site-rating" disabled={scoresStatus !== 'ready'}>{lang === 'en' ? 'Highest community rating' : lang === 'de' ? 'Beste Community-Bewertung' : '本站评分最高'}</option><option value="site-reviews" disabled={scoresStatus !== 'ready'}>{lang === 'en' ? 'Most community reviews' : lang === 'de' ? 'Meiste Community-Bewertungen' : '本站评论最多'}</option></select></div>
-        </div>
-        <div className="cuisine-bar"><span>{t('cuisine')}</span><div className="cuisine-chips">{cuisineFilters.map(([value,label])=><button key={value} className={cuisine===value?'active':''} onClick={()=>setCuisine(value)}>{label}</button>)}</div></div>
-        {view === 'map' && <div className="map-shell"><div className="map-heading"><p>{t('mapHint')}</p><span>{shown.length} {t('mapPlaces')}</span></div><MapView entries={shown} categoryFor={categoryFor} openMapLabel={t('openMap')} /></div>}
-        {view === 'list' && <div className="place-list">
-          {shown.map(({place,status},index)=><article className="place-row" key={place.name}>
-            <div className={`row-index tone-${index%4}`}>{String(index+1).padStart(2,'0')}</div>
-            <a className="row-photo" href={mapUrl(place)} target="_blank" rel="noreferrer" aria-label={`在 Google Maps 查看 ${place.name}`}>
-              <img src={mapImages[place.name]} alt={place.name} loading="lazy" referrerPolicy="no-referrer" />
-              <span>{place.sources.includes('推荐补充')?t('recommendPhoto'):t('photo')}</span>
-            </a>
-            <div className="row-main">
-              <div className={`status ${status.state}`}><span/>{status.label} · {status.detail}</div>
-              <h3>{place.name}</h3><p>{placeCopy(place)[0]} · {place.address}</p>
-              <div className="source-list">{place.sources.map(source=><b key={source}>{sourceCopy(source)}</b>)}</div>
-            </div>
-            <div className="row-scores"><div className="row-score"><strong>{place.rating}</strong><span>★ Google</span><small>{place.reviews !== null ? `${place.reviews.toLocaleString(timeLocale)} ${t('reviewCount')}` : t('unknown')}</small></div>
-            <button type="button" className="row-score row-site-score" onClick={()=>setReviewPlace(place.name)} aria-label={`${place.name} · ${lang === 'en' ? 'Community reviews' : lang === 'de' ? 'Community-Bewertungen' : '本站评分与评论'}`}>
-              <strong>{scoresStatus === 'ready' && siteScores[place.name] ? siteScores[place.name].average.toFixed(1) : '—'}</strong>
-              <span>★ {lang === 'en' ? 'This site' : lang === 'de' ? 'Diese Seite' : '本站评分'}</span>
-              <small>{scoresStatus === 'loading' ? (lang === 'en' ? 'Loading…' : lang === 'de' ? 'Lädt…' : '加载中…') : scoresStatus === 'error' ? (lang === 'en' ? 'View reviews ↗' : lang === 'de' ? 'Bewertungen ↗' : '查看评论 ↗') : `${siteScores[place.name]?.count || 0} ${t('reviewCount')} ↗`}</small>
-            </button></div>
-            <div className="row-menu"><span>MENU</span><p>{placeCopy(place)[1]}</p></div>
-            <div className="row-actions"><a className="menu-button" href={menuUrl(place)} target="_blank" rel="noreferrer">{t('menu')}</a><a href={mapUrl(place)} target="_blank" rel="noreferrer">{t('maps')}</a></div>
-          </article>)}
-        </div>}
-        {!shown.length && <div className="empty">{t('empty')}</div>}
-      </section>
-
-      {reviewPlace && <Reviews key={reviewPlace} place={reviewPlace} lang={lang} onClose={() => setReviewPlace(null)} />}
 
       <section className="news-section" id="new">
         <div className="news-title"><p className="eyebrow">{t('newsEyebrow')}</p><h2>{t('newsTitle')}</h2><p>{t('newsIntro')}</p></div>
