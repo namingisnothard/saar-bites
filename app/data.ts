@@ -18,6 +18,15 @@ const d = (...days: Interval[][]): Interval[][] => days;
 const q = (name: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name} Saarbrücken`)}`;
 
 export const places: Place[] = [
+  // Added 2026-09-15. Official menus/addresses; Memory Burger and Im kleinen Restaurant hours from official sites.
+  // Google rating snapshots: Wanderlog Tbilissi (2700151), Krua Thai (3039337);
+  // Restaurant Guru Memory-Burger-Saarbrucken-Saarbrucken and Limoncello-Saarbrucken.
+  // Tbilissi has no readable official weekly hours; Krua Thai directories conflict. Keep live status unconfirmed.
+  { name:'Restaurant Tbilissi', category:'格鲁吉亚菜 · Georgian', group:'restaurant', rating:4.7, reviews:410, sources:['推荐补充'], address:'Saarstraße 13, 66111 Saarbrücken', website:'https://tbilissi-georgisches-restaurant.eatbu.com/', menu:'https://tbilissi-georgisches-restaurant.eatbu.com/', menuNote:'官网菜单 · Khachapuri 芝士面包、炖菜与格鲁吉亚葡萄酒 · 营业时间请向店家确认', schedule:null },
+  { name:'Memory Burger Saarbrücken', category:'Burger · 美式', group:'restaurant', rating:4.8, reviews:865, sources:['推荐补充'], address:'Ufergasse 2, 66111 Saarbrücken', website:'https://saarbruecken.memory-burger.de/', menu:'https://www.memory-burger-saarbrucken.de/', menuNote:'点餐菜单 · 牛肉、鸡肉与素食汉堡、Bowls', schedule:d([['17:00','22:00']],[['12:00','22:00']],[['12:00','22:00']],[['12:00','22:00']],[['12:00','22:00']],[['12:00','23:00']],[['12:00','23:00']]) },
+  { name:'Krua Thai Restaurant', category:'泰国菜', group:'restaurant', rating:4.6, reviews:319, sources:['推荐补充'], address:'Mainzer Straße 71, 66121 Saarbrücken', website:'http://www.kruathai-sb.de/', menu:'https://de.restaurantguru.com/Krua-Thai-Saarbrucken/menu', menuNote:'菜单照片 · 泰式咖喱与素食选项 · 各平台营业时间不一致，请向店家确认', schedule:null },
+  { name:'Im kleinen Restaurant', category:'意大利 · 地中海', group:'restaurant', rating:4.7, reviews:276, sources:['推荐补充'], address:'Gersweiler Straße 39–43, 66117 Saarbrücken', website:'https://www.im-kleinen-restaurant.de/', menu:'https://www.im-kleinen-restaurant.de/wp-content/uploads/2025/09/Speisekarte.pdf', menuNote:'官网菜单 · Pasta、牛排与地中海料理 · 现址位于 Hotel Crystal，节假日 17:30–22:00', schedule:d([['11:30','14:00'],['17:30','22:00']],[],[['17:30','22:00']],[['17:30','22:00']],[['17:30','22:00']],[['17:30','22:00']],[['17:30','22:00']]) },
+
   // Added 2026-09-15. Hours/menu: official sites. Rating snapshots: Wanderlog
   // https://wanderlog.com/place/details/2700258/osaka-restaurant
   // https://wanderlog.com/sv/list/geoCategory/466832/best-asian-food-in-saarbrucken
@@ -78,6 +87,11 @@ export const places: Place[] = [
 ];
 
 export const placeCoordinates: Record<string, [number, number]> = {
+  'Restaurant Tbilissi':[49.232196807,6.995368003], // Waze venue at Saarstraße 13.
+  'Memory Burger Saarbrücken':[49.235231,6.993173], // Das Telefonbuch restaurant listing.
+  'Krua Thai Restaurant':[49.2296758,7.0065700], // Mapy / OpenStreetMap restaurant point.
+  'Im kleinen Restaurant':[49.23211,6.96892], // Approximate Hotel Crystal site, current Gersweiler Straße address.
+
   'Osaka Restaurant':[49.2350272,6.9949208],
   'MORAK':[49.2353783,6.9905317],
   'CAFE ESPECIAL Saarbrücken':[49.2321235,6.9958925],
@@ -131,6 +145,11 @@ export const placeCoordinates: Record<string, [number, number]> = {
 };
 
 export const mapImages: Record<string, string> = {
+  'Restaurant Tbilissi':'https://cdn.website.dish.co/media/78/51/9916955/Tbilissi-georgisches-Restaurant-IMG-8501-JPG.jpg',
+  'Memory Burger Saarbrücken':'https://saarbruecken.memory-burger.de/wp-content/uploads/2026/02/AnyConv.com__941f4c2d-b654-4b04-9405-38ed5d6ca7fb-1024x683.webp',
+  'Krua Thai Restaurant':'https://itin-dev.wanderlogstatic.com/freeImage/XFMDKzCTZiMO4sxUYMppHSGPCAlJpAiS',
+  'Im kleinen Restaurant':'https://www.im-kleinen-restaurant.de/wp-content/uploads/2025/03/DSC01669-1024x682.jpg',
+
   // Photos from the restaurants' official websites, checked 2026-09-15.
   'Osaka Restaurant':'https://www.sushi-saarbruecken.de/erelreew/2026/07/20260630_0008.jpg',
   'MORAK':'https://morak.online/_assets/media/d3ee022828a717a4ea78d192ac632e66.jpg',

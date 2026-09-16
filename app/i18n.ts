@@ -59,6 +59,11 @@ export const weekdays: Record<Lang, string[]> = {
 };
 
 export const placeTranslations: Record<string, { en: [string,string]; de: [string,string] }> = {
+  'Restaurant Tbilissi':{en:['Georgian','Official menu · khachapuri, stews and Georgian wine · confirm hours with the restaurant'],de:['Georgisch','Offizielle Karte · Chatschapuri, Eintöpfe und georgischer Wein · Öffnungszeiten beim Restaurant erfragen']},
+  'Memory Burger Saarbrücken':{en:['Burgers · American','Ordering menu · beef, chicken and vegetarian burgers, bowls'],de:['Burger · Amerikanisch','Bestellkarte · Rindfleisch-, Hähnchen- und vegetarische Burger, Bowls']},
+  'Krua Thai Restaurant':{en:['Thai','Menu photos · Thai curries and vegetarian options · published hours differ; confirm with the restaurant'],de:['Thailändisch','Menüfotos · Thai-Currys und vegetarische Optionen · abweichende Öffnungszeiten; beim Restaurant erfragen']},
+  'Im kleinen Restaurant':{en:['Italian · Mediterranean','Official menu · pasta, steaks and Mediterranean dishes · now at Hotel Crystal; public holidays 17:30–22:00'],de:['Italienisch · Mediterran','Offizielle Karte · Pasta, Steaks und mediterrane Gerichte · jetzt im Hotel Crystal; Feiertage 17:30–22:00']},
+
   'the bakery':{en:['Coffee · bakery · breakfast','Croissants, quiche and cakes · check Google Maps for hours'],de:['Café · Bäckerei · Frühstück','Croissants, Quiche und Kuchen · Öffnungszeiten auf Google Maps prüfen']},
   'Bäckerei - Konditorei Erhard Heil':{en:['Bakery · pastry shop','Bread, apple fritters and cakes'],de:['Bäckerei · Konditorei','Brot, Apfelkrapfen und Kuchen']},
   'Café Bisous':{en:['Café · brunch','Photo menu · pancakes and avocado toast'],de:['Café · Brunch','Fotokarte · Pancakes und Avocado-Toast']},
