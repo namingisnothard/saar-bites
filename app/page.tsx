@@ -125,9 +125,10 @@ export default function Home() {
   const placeCopy = useCallback((place: Place) => lang === 'en' || lang === 'de' ? (placeTranslations[place.name]?.[lang] ?? [place.category,place.menuNote]) : [place.category,place.menuNote], [lang]);
   const categoryFor = useCallback((place: Place) => placeCopy(place)[0], [placeCopy]);
   const sourceCopy = (source: string) => {
-    if (lang === 'zh') return source === 'Café' ? '咖啡收藏' : source === 'Starred' ? '星标地点' : source === '推荐补充' ? '补充推荐' : '萨尔布吕肯';
-    if (lang === 'en') return source === 'Café' ? 'Café list' : source === 'Starred' ? 'Starred' : source === '推荐补充' ? 'Recommended' : 'Saarbrücken';
-    if (lang === 'de') return source === 'Café' ? 'Café-Liste' : source === 'Starred' ? 'Markiert' : source === '推荐补充' ? 'Empfohlen' : 'Saarbrücken';
+    if (source === 'Starred') return t('starred');
+    if (lang === 'zh') return source === 'Café' ? '咖啡收藏' : source === '推荐补充' ? '补充推荐' : '萨尔布吕肯';
+    if (lang === 'en') return source === 'Café' ? 'Café list' : source === '推荐补充' ? 'Recommended' : 'Saarbrücken';
+    if (lang === 'de') return source === 'Café' ? 'Café-Liste' : source === '推荐补充' ? 'Empfohlen' : 'Saarbrücken';
     return source === '推荐补充' ? '补充推荐' : source;
   };
   const filters = [['all',t('all')],['restaurant',t('restaurant')],['cafe',t('cafe')],['bakery',t('bakery')],['starred',t('starred')]];
