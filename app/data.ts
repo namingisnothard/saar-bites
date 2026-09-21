@@ -206,9 +206,9 @@ export const mapImages: Record<string, string> = {
 };
 
 // Opening reports reviewed 2026-09-21; each item links to its supporting source.
-export const openingNews = [
+export const openingNews: { date:string; state:string; name:string; category:string; address:string; note:string; url:string; detailsUrl?:string }[] = [
   {"date":"01 OCT 2026","state":"重开预告","name":"Dampfschiff","category":"Bar · 酒吧","address":"Saarstraße 8, 66111 Saarbrücken","note":"据开业资讯网站，计划 10 月 1 日在原 Sake 餐厅重开；截至 9 月 21 日仍属预告。","url":"https://www.neueroeffnung.info/saarbruecken/dampfschiff-bar"},
-  {"date":"SEP 2026","state":"本周计划开业 · 日期待定","name":"Le Flâneur","category":"法式 · Bistro","address":"Sankt-Johanner-Markt 7–9, 66111 Saarbrücken","note":"截至 9 月 21 日，开业资讯仍预计在本周开业，具体日期未确认；位于原 Sausalitos。","url":"https://www.neueroeffnung.info/saarbruecken/le-flaneur-franzoesisches-bistro-restaurant"},
+  {"date":"SEP 2026","state":"本周计划开业 · 日期待定","name":"Le Flâneur","category":"法式 · Bistro","address":"Sankt-Johanner-Markt 7–9, 66111 Saarbrücken","note":"计划本周开业，具体日期未确认。报道预告生蚝、Poularde、勃艮第炖牛肉、海鲈、Flammkuchen 和来自 ATAMA 的纯素鹅肝；并非正式菜单。9 月 21 日 OpenTable 仍显示 Coming Soon，暂无完整菜单；未找到可核实的主厨姓名。","url":"https://www.neueroeffnung.info/saarbruecken/le-flaneur-franzoesisches-bistro-restaurant","detailsUrl":"https://www.opentable.de/r/le-flaneur-saarbrucken"},
   {"date":"18 SEP 2026","state":"已开业","name":"Mangal Döner x Lukas Podolski","category":"Döner · 快餐","address":"Sulzbachstraße 2, 66111 Saarbrücken","note":"RADIO SALÜ 于 9 月 18 日报道已开业，入驻原 Café Schubert；与 Berliner Promenade 的 Mangal Mezze & Grill 是不同店家。","url":"https://www.salue.de/nachrichten/message-258387.phtml"},
   {"date":"12 SEP 2026","state":"已上线点餐","name":"Why Not Sushi","category":"日式 · Sushi","address":"Bahnhofstraße 58, 66111 Saarbrücken","note":"开业资讯列出 9 月 12 日；截至 9 月 21 日 Wolt 已有本店菜单、地址与配送时段。堂食营业时间请向店家确认。","url":"https://wolt.com/de/deu/saarbrucken/restaurant/why-not-sushi"},
   {"date":"05 SEP 2026","state":"重开待确认","name":"Halbmond Restaurant","category":"阿拉伯 · Café · Terrasse","address":"Fröschengasse 18, 66111 Saarbrücken","note":"9 月 5 日为此前重开目标，曾可能延至 12 日；截至 9 月 21 日官网仍显示未注明月份的休假通知，实际重开待确认。","url":"https://www.halbmondrestaurant.de/"},

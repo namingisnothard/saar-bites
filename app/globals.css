@@ -376,3 +376,17 @@ footer p { max-width:680px; margin:0; color:#b9c1bc; font-size:10px; line-height
 .board-feed-heading .review-secondary { margin:0; }
 .board-message { margin:20px 0; }.board-message h3{font-size:24px;overflow-wrap:anywhere;margin:16px 0 8px}.board-location{color:#536057;font-size:14px}.board-layout button:disabled{opacity:.5;cursor:not-allowed}
 @media(max-width:800px){.board-layout{grid-template-columns:1fr}.board-message .review-byline{flex-wrap:wrap}.board-message time{white-space:normal}}
+
+/* Michelin catalog entry, visible on desktop and mobile. */
+.michelin-promo { display:flex; align-items:center; gap:24px; padding:19px clamp(20px,4vw,64px); border-bottom:1px solid var(--ink); background:#f1ded5; }
+.michelin-promo-stars { flex-shrink:0; color:#a52b35; font-size:24px; letter-spacing:3px; }
+.michelin-promo>span:nth-child(2) { display:grid; gap:6px; }
+.michelin-promo strong { font-size:15px; }
+.michelin-promo small { color:#536057; font-size:11px; }
+.michelin-promo>b { margin-left:auto; font-size:24px; }
+.michelin-promo:hover { background:#eed5c9; }
+.nav-shell { flex-wrap:wrap; gap:16px; }
+.nav-tools { flex-wrap:wrap; }
+@media(max-width:580px) { .michelin-promo { gap:14px; }.michelin-promo-stars { font-size:17px; letter-spacing:0; }.michelin-promo strong { font-size:13px; }.michelin-promo small { font-size:10px; } }
+
+.opening-details-link { display:inline-block; margin:0 0 22px 52px; padding-bottom:3px; border-bottom:1px solid currentColor; font-size:11px; font-weight:800; }

@@ -228,9 +228,14 @@ export default function Home() {
       <nav className="nav-shell">
         <a className="brand" href="#top"><span className="brand-mark">SB</span><span>SAAR BITES</span></a>
         <div className="nav-links"><a href="#radar">{t('nowNav')}</a><a href="#dice">{t('diceNav')}</a><a href="#places">{t('savedNav')}</a><a href="#new">{t('newsNav')}</a></div>
-        <div className="nav-tools"><Link className="life-nav-link" href="/board">{lang === 'en' ? 'Message board' : lang === 'de' ? 'Pinnwand' : '留言板'}</Link><Link className="life-nav-link" href="/reviews">{lang === 'en' ? 'Latest reviews' : lang === 'de' ? 'Neue Bewertungen' : '最新打卡'}</Link><Link className="life-nav-link" href="/life">{lang === 'en' ? 'Saar Life ↗' : lang === 'de' ? 'Saar-Leben ↗' : '萨尔生活 ↗'}</Link><div className="language-switch" role="group" aria-label={t('language')}>{([['mix','ZN/EN'],['en','EN'],['de','DE']] as [Lang,string][]).map(([value,label])=><button key={value} className={lang===value?'active':''} onClick={()=>chooseLanguage(value)} aria-pressed={lang===value}>{label}</button>)}</div><div className="nav-meta"><span className="live-dot" />{t('locale')} {localTime}</div></div>
+        <div className="nav-tools"><Link className="life-nav-link" href="/michelin">{lang === 'en' ? 'Michelin stars' : lang === 'de' ? 'Michelin-Sterne' : '米其林星级'}</Link><Link className="life-nav-link" href="/board">{lang === 'en' ? 'Message board' : lang === 'de' ? 'Pinnwand' : '留言板'}</Link><Link className="life-nav-link" href="/reviews">{lang === 'en' ? 'Latest reviews' : lang === 'de' ? 'Neue Bewertungen' : '最新打卡'}</Link><Link className="life-nav-link" href="/life">{lang === 'en' ? 'Saar Life ↗' : lang === 'de' ? 'Saar-Leben ↗' : '萨尔生活 ↗'}</Link><div className="language-switch" role="group" aria-label={t('language')}>{([['mix','ZN/EN'],['en','EN'],['de','DE']] as [Lang,string][]).map(([value,label])=><button key={value} className={lang===value?'active':''} onClick={()=>chooseLanguage(value)} aria-pressed={lang===value}>{label}</button>)}</div><div className="nav-meta"><span className="live-dot" />{t('locale')} {localTime}</div></div>
       </nav>
 
+      <Link href="/michelin" className="michelin-promo">
+        <span className="michelin-promo-stars" aria-hidden="true">✳ ✳ ✳</span>
+        <span><strong>{lang === 'en' ? 'Eight starred tables. One Saarland guide.' : lang === 'de' ? 'Acht Sternerestaurants. Ein Saarland-Guide.' : '萨尔兰 8 家米其林星级餐厅'}</strong><small>{lang === 'en' ? 'Michelin 2026 · menus, prices & how to book' : lang === 'de' ? 'Michelin 2026 · Menüs, Preise & Reservierung' : 'MICHELIN 2026 · 菜单、价格与订位指南'}</small></span>
+        <b aria-hidden="true">↗</b>
+      </Link>
       <section className="hero" id="top">
         <div className="hero-copy">
           <p className="eyebrow">{t('heroEyebrow')}</p>
@@ -338,9 +343,9 @@ export default function Home() {
         <div className="news-title"><p className="eyebrow">{t('newsEyebrow')}</p><h2>{t('newsTitle')}</h2><p>{t('newsIntro')}</p></div>
         <div className="news-layout">
           <div className="opening-feed">
-            {openingNews.map((item,index)=>{ const translated = lang === 'en' || lang === 'de' ? openingTranslations[item.name]?.[lang] : [item.state,item.category,item.note]; return <a className="opening-item" href={item.url} target="_blank" rel="noreferrer" key={item.name}>
+            {openingNews.map((item,index)=>{ const translated = lang === 'en' || lang === 'de' ? openingTranslations[item.name]?.[lang] : [item.state,item.category,item.note]; return <div key={item.name}><a className="opening-item" href={item.url} target="_blank" rel="noreferrer">
               <span className="opening-no">{String(index+1).padStart(2,'0')}</span><div><div className="opening-date">{item.date} · {translated?.[0]}</div><h3>{item.name}</h3><p>{translated?.[1]} · {item.address}</p><small>{translated?.[2]}</small></div><b>↗</b>
-            </a>})}
+            </a>{item.detailsUrl && <a className="opening-details-link" href={item.detailsUrl} target="_blank" rel="noreferrer">{lang === 'en' ? 'OpenTable listing ↗' : lang === 'de' ? 'OpenTable-Eintrag ↗' : '查看 OpenTable 信息 ↗'}</a>}</div>})}
           </div>
           <aside className="newsletter-stack"><div className="newsletter-top"><span>✦</span><div><p>{t('newsletterDesk')}</p><h3>{t('newsletterTitle')}</h3></div></div>
             {newsletters.map(item=>{ const translated = lang === 'en' || lang === 'de' ? newsletterTranslations[item.name]?.[lang] : [item.cadence,item.note]; const displayName = item.name === 'Saarbrücken 市政 Newsletter' ? (lang === 'en' ? 'City of Saarbrücken newsletter' : lang === 'de' ? 'Newsletter der Stadt Saarbrücken' : lang === 'zh' ? '萨尔布吕肯市政通讯' : item.name) : item.name; return <a href={item.url} target="_blank" rel="noreferrer" key={item.name}><div><span>{translated?.[0]}</span><h4>{displayName}</h4><p>{translated?.[1]}</p></div><b>{t('subscribe')}</b></a>})}
