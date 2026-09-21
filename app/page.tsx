@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { mapImages, mapUrl, newsletters, openingNews, places, type Place } from './data';
+import { contentReviewedAt, mapImages, mapUrl, newsletters, openingNews, places, type Place } from './data';
 import { newsletterTranslations, openingTranslations, placeTranslations, ui, weekdays, type Lang } from './i18n';
 import MapView from './MapView';
 import Reviews from './Reviews';
@@ -248,7 +248,7 @@ export default function Home() {
             </div>}
             {query && <div className="search-count">{shown.length} {t('matches')} · <button onClick={()=>document.querySelector('#places')?.scrollIntoView({behavior:'smooth'})}>{t('allSaved')} ↓</button></div>}
           </div>
-          <div className="hero-stats"><div><strong>{places.length}</strong><span>{t('savedCount')}</span></div><div><strong>{openPlaces.length}</strong><span>{t('openCount')}</span></div><div><strong>09·04</strong><span>{t('checked')}</span></div></div>
+          <div className="hero-stats"><div><strong>{places.length}</strong><span>{t('savedCount')}</span></div><div><strong>{openPlaces.length}</strong><span>{t('openCount')}</span></div><div><strong><time dateTime={contentReviewedAt}>{contentReviewedAt.slice(5).replace('-','·')}</time></strong><span>{t('checked')}</span></div></div>
         </div>
         <div className="now-card">
           <div className="now-topline"><span>OPEN-NOW RADAR</span><span className="pulse">● LIVE</span></div>
