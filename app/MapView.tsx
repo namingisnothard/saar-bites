@@ -60,7 +60,7 @@ export default function MapView({ entries, categoryFor, openMapLabel }: Props) {
         const title = document.createElement('strong');
         title.textContent = place.name;
         const meta = document.createElement('p');
-        meta.textContent = `${categoryFor(place)} · ★ ${place.rating}`;
+        meta.textContent = `${categoryFor(place)} · ★ ${place.rating} ${place.ratingSource ?? 'Google'}`;
         const hours = document.createElement('small');
         hours.className = `map-popup-status ${status.state}`;
         hours.textContent = `${status.label} · ${status.detail}`;
