@@ -19,6 +19,18 @@ function clockParts(date: Date) {
   return { day: weekdayIndex[value('weekday')] ?? 0, minute: Number(value('hour')) * 60 + Number(value('minute')) };
 }
 
+function berlinDateKey(date: Date) {
+  const parts = new Intl.DateTimeFormat('en-US', {timeZone:'Europe/Berlin',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date);
+  const value = (type: Intl.DateTimeFormatPartTypes) => parts.find(part => part.type === type)?.value ?? '';
+  return `${value('year')}-${value('month')}-${value('day')}`;
+}
+
+function shiftedDateKey(key: string, offset: number) {
+  const date = new Date(`${key}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + offset);
+  return date.toISOString().slice(0,10);
+}
+
 function toMinute(time: string) { const [h,m] = time.split(':').map(Number); return h * 60 + m; }
 function showTime(time: string) { const [h,m] = time.split(':').map(Number); return `${String(h % 24).padStart(2,'0')}:${String(m).padStart(2,'0')}`; }
 function showWait(minutes: number, lang: Lang) {
@@ -45,23 +57,34 @@ function cuisineTags(place: Place) {
 
 function getStatus(place: Place, date: Date | null, lang: Lang): Status {
   const c = ui[lang];
-  if (!date || !place.schedule) return { state:'unknown', label:c.unknown, detail:c.checkMaps };
+  if (!date) return { state:'unknown', label:c.calculating, detail:c.localClockLoading };
+  if (!place.schedule) return { state:'unknown', label:c.unknown, detail:(lang === 'en' || lang === 'de' ? placeTranslations[place.name]?.[lang]?.[1] : undefined) ?? place.menuNote };
+  const dateKey = berlinDateKey(date);
+  if (place.temporaryClosure && dateKey >= place.temporaryClosure.from && dateKey <= place.temporaryClosure.through) {
+    return {state:'closed',label:c.closed,detail:`${c.temporaryClosure} · ${place.temporaryClosure.resume} ${c.reopens}`};
+  }
+  const source = place.scheduleSource === 'Google Maps' ? ` · ${c.mapsHours}` : '';
   const { day, minute } = clockParts(date);
-  const today = place.schedule[day] ?? [];
+  const scheduleFor = (offset: number) => {
+    const key = shiftedDateKey(dateKey,offset);
+    if (place.temporaryClosure && key >= place.temporaryClosure.from && key <= place.temporaryClosure.through) return [];
+    return place.scheduleExceptions?.[key] ?? place.schedule?.[(day + offset + 7) % 7] ?? [];
+  };
+  const today = scheduleFor(0);
   for (const [start,end] of today) {
     const s = toMinute(start), e = toMinute(end);
-    if (minute >= s && minute < e) return { state:'open', label:c.open, detail:`${showTime(end)} ${c.closes}`, closeIn:e-minute };
+    if (minute >= s && minute < e) return { state:'open', label:c.open, detail:`${showTime(end)} ${c.closes}${source}`, closeIn:e-minute };
   }
-  const prev = place.schedule[(day + 6) % 7] ?? [];
+  const prev = scheduleFor(-1);
   for (const [,end] of prev) {
     const e = toMinute(end);
-    if (e > 1440 && minute < e - 1440) return { state:'open', label:c.open, detail:`${showTime(end)} ${c.closes}`, closeIn:e-1440-minute };
+    if (e > 1440 && minute < e - 1440) return { state:'open', label:c.open, detail:`${showTime(end)} ${c.closes}${source}`, closeIn:e-1440-minute };
   }
-  for (let offset=0; offset<8; offset++) {
+  for (let offset=0; offset<16; offset++) {
     const nextDay = (day + offset) % 7;
-    for (const [start] of place.schedule[nextDay] ?? []) {
+    for (const [start] of scheduleFor(offset)) {
       const s = toMinute(start);
-      if (offset > 0 || s > minute) return { state:'closed', label:c.closed, detail:`${offset === 0 ? c.today : weekdays[lang][nextDay]} ${showTime(start)} ${c.opens}`, openIn:offset * 1440 + s - minute, opensAt:showTime(start) };
+      if (offset > 0 || s > minute) return { state:'closed', label:c.closed, detail:`${offset === 0 ? c.today : weekdays[lang][nextDay]} ${showTime(start)} ${c.opens}${source}`, openIn:offset * 1440 + s - minute, opensAt:showTime(start) };
     }
   }
   return { state:'closed', label:c.closed, detail:c.noHours };
@@ -132,7 +155,7 @@ export default function Home() {
     if (lang === 'de') return source === 'Café' ? 'Café-Liste' : source === '推荐补充' ? 'Empfohlen' : 'Saarbrücken';
     return source === '推荐补充' ? '补充推荐' : source;
   };
-  const filters = [['all',t('all')],['restaurant',t('restaurant')],['opentable','OpenTable'],['cafe',t('cafe')],['bakery',t('bakery')],['starred',t('starred')]];
+  const filters = [['all',t('all')],['new',t('newlyOpened')],['restaurant',t('restaurant')],['opentable','OpenTable'],['cafe',t('cafe')],['bakery',t('bakery')],['starred',t('starred')]];
   const cuisineFilters = [['all',t('cuisineAll')],['chinese',t('chinese')],['asian',t('asian')],['mediterranean',t('mediterranean')],['german',t('german')],['cafeBrunch',t('cafeBrunch')],['sweets',t('sweets')],['italian',t('italian')],['grill',t('grill')],['global',t('global')]];
 
   const enriched = useMemo(() => places.map((place) => ({ place, status:getStatus(place,now,lang) })), [now,lang]);
@@ -143,7 +166,7 @@ export default function Home() {
   const recommendations = [...openPlaces].sort((a,b) => {
     const closingPenaltyA = (a.status.closeIn ?? 999) < 45 ? .35 : 0;
     const closingPenaltyB = (b.status.closeIn ?? 999) < 45 ? .35 : 0;
-    return (b.place.rating-closingPenaltyB) - (a.place.rating-closingPenaltyA);
+    return ((b.place.rating ?? 0)-closingPenaltyB) - ((a.place.rating ?? 0)-closingPenaltyA);
   }).slice(0,5);
   const weeklyHours = useMemo(() => Array.from({length:7}, (_,day) => {
     const scheduled = places.filter(place => (place.schedule?.[day]?.length ?? 0) > 0);
@@ -159,17 +182,22 @@ export default function Home() {
     const list = enriched.filter(({place,status}) => {
       const localized = placeCopy(place);
       const matchesText = `${place.name} ${place.category} ${localized[0]} ${place.menuNote} ${localized[1]} ${place.address}`.toLowerCase().includes(needle);
-      const matchesFilter = filter === 'all' || (filter === 'starred' ? place.sources.includes('Starred') : filter === 'opentable' ? place.sources.includes('OpenTable') : filter === 'bakery' ? ['bakery','dessert'].includes(place.group) : place.group === filter);
+      const matchesFilter = filter === 'all' || (filter === 'new' ? Boolean(place.openedOn) : filter === 'starred' ? place.sources.includes('Starred') : filter === 'opentable' ? place.sources.includes('OpenTable') : filter === 'bakery' ? ['bakery','dessert'].includes(place.group) : place.group === filter);
       const matchesCuisine = cuisine === 'all' || cuisineTags(place).includes(cuisine);
       const matchesDay = selectedDay === null || (place.schedule?.[selectedDay]?.length ?? 0) > 0;
       return matchesText && matchesFilter && matchesCuisine && matchesDay && (!openOnly || status.state === 'open');
     });
     return list.sort((a,b) => {
+      if (filter === 'new' && sort === 'smart') return (b.place.openedOn ?? '').localeCompare(a.place.openedOn ?? '');
+      if (sort === 'new') {
+        const openingOrder = (b.place.openedOn ?? '').localeCompare(a.place.openedOn ?? '');
+        if (openingOrder) return openingOrder;
+      }
       if (sort === 'site-rating' || sort === 'site-reviews') return compareCommunity(a.place.name,b.place.name,siteScores,sort);
-      if (sort === 'rating') return b.place.rating - a.place.rating;
+      if (sort === 'rating') return (b.place.rating ?? -1) - (a.place.rating ?? -1);
       if (sort === 'reviews') return (b.place.reviews ?? -1) - (a.place.reviews ?? -1);
       const order = {open:0,unknown:1,closed:2};
-      return order[a.status.state] - order[b.status.state] || b.place.rating - a.place.rating;
+      return order[a.status.state] - order[b.status.state] || (b.place.rating ?? -1) - (a.place.rating ?? -1);
     });
   }, [enriched,filter,cuisine,selectedDay,openOnly,query,sort,placeCopy,siteScores]);
 
@@ -235,7 +263,7 @@ export default function Home() {
 
       <Link href="/michelin" className="michelin-promo">
         <span className="michelin-promo-stars" aria-hidden="true">✳ ✳ ✳</span>
-        <span><strong>{lang === 'en' ? 'Eight starred tables. One Saarland guide.' : lang === 'de' ? 'Acht Sternerestaurants. Ein Saarland-Guide.' : '萨尔兰 8 家米其林星级餐厅'}</strong><small>{lang === 'en' ? 'Michelin 2026 · menus, prices & how to book' : lang === 'de' ? 'Michelin 2026 · Menüs, Preise & Reservierung' : 'MICHELIN 2026 · 菜单、价格与订位指南'}</small></span>
+        <span><strong>{lang === 'en' ? 'Saarland stars, plus nearby France.' : lang === 'de' ? 'Saarland-Sterne und nahes Frankreich.' : '萨尔兰米其林星级＋邻近法国餐厅'}</strong><small>{lang === 'en' ? 'Michelin 2026 · menus, prices & how to book' : lang === 'de' ? 'Michelin 2026 · Menüs, Preise & Reservierung' : 'MICHELIN 2026 · 菜单、价格与订位指南'}</small></span>
         <b aria-hidden="true">↗</b>
       </Link>
       <section className="hero" id="top">
@@ -279,7 +307,7 @@ export default function Home() {
         <div className="recommend-grid">
           {recommendations.map(({place,status},index)=><article className="recommend-card" key={place.name}>
             <div className="recommend-number">0{index+1}</div><div className="status open"><span/>{status.label} · {status.detail}</div><h3>{place.name}</h3><p>{placeCopy(place)[0]}</p>
-            <div className="recommend-bottom"><span>★ {place.rating} {place.ratingSource ?? 'Google'}{place.reviews !== null && <> · {place.reviews.toLocaleString(timeLocale)} {t('reviews')}</>}</span><a href={place.booking ?? mapUrl(place)} target="_blank" rel="noreferrer">{place.booking ? (lang === 'de' ? 'Reservieren ↗' : lang === 'en' ? 'Book a table ↗' : '预约座位 ↗') : t('openMap')}</a></div>
+            <div className="recommend-bottom"><span>{place.rating === null ? t('noRating') : <>★ {place.rating} {place.ratingSource ?? 'Google'}</>}{place.reviews !== null && <> · {place.reviews.toLocaleString(timeLocale)} {t('reviews')}</>}</span><a href={place.booking ?? mapUrl(place)} target="_blank" rel="noreferrer">{place.booking ? (lang === 'de' ? 'Reservieren ↗' : lang === 'en' ? 'Book a table ↗' : '预约座位 ↗') : t('openMap')}</a></div>
           </article>)}
           {!recommendations.length && <p className="empty">{t('noOpen')}</p>}
         </div>
@@ -302,7 +330,7 @@ export default function Home() {
           <button className="roll-button" onClick={rollDice} disabled={!dicePool.length || rolling}><span className={rolling?'rolling':''}>⚄</span>{rolling?t('rolling'):dicePlace?t('again'):t('roll')}</button>
         </div>
         <div className={rolling?'dice-result is-rolling':'dice-result'}>
-          {dicePlace && diceStatus ? <><a className="dice-photo" href={mapUrl(dicePlace)} target="_blank" rel="noreferrer"><img src={mapImages[dicePlace.name] ?? restaurantPlaceholder} alt={dicePlace.name} referrerPolicy="no-referrer" onError={(event)=>{event.currentTarget.src=restaurantPlaceholder;}} /><span>★ {dicePlace.rating} {dicePlace.ratingSource ?? 'Google'}</span></a><div className="dice-result-body"><p>{t('diceResult')}</p><div className={`status ${diceStatus.state}`}><span/>{diceStatus.label} · {diceStatus.detail}</div><h3>{dicePlace.name}</h3><small>{placeCopy(dicePlace)[0]} · {dicePlace.address}</small><a href={mapUrl(dicePlace)} target="_blank" rel="noreferrer">{t('openMap')}</a></div></> : <div className="dice-placeholder"><span>⚄</span><p>{dicePool.length?t('roll'):t('diceEmpty')}</p></div>}
+          {dicePlace && diceStatus ? <><a className="dice-photo" href={mapUrl(dicePlace)} target="_blank" rel="noreferrer"><img src={mapImages[dicePlace.name] ?? restaurantPlaceholder} alt={dicePlace.name} referrerPolicy="no-referrer" onError={(event)=>{event.currentTarget.src=restaurantPlaceholder;}} /><span>{dicePlace.rating === null ? t('noRating') : `★ ${dicePlace.rating} ${dicePlace.ratingSource ?? 'Google'}`}</span></a><div className="dice-result-body"><p>{t('diceResult')}</p><div className={`status ${diceStatus.state}`}><span/>{diceStatus.label} · {diceStatus.detail}</div><h3>{dicePlace.name}</h3><small>{placeCopy(dicePlace)[0]} · {dicePlace.address}</small><a href={mapUrl(dicePlace)} target="_blank" rel="noreferrer">{t('openMap')}</a></div></> : <div className="dice-placeholder"><span>⚄</span><p>{dicePool.length?t('roll'):t('diceEmpty')}</p></div>}
         </div>
       </section>
 
@@ -311,7 +339,7 @@ export default function Home() {
         <a className="opentable-directory" href="https://www.opentable.de/region/saarbrucken-restaurants" target="_blank" rel="noreferrer">{lang === 'en' ? 'Browse the live OpenTable Saarbrücken directory ↗' : lang === 'de' ? 'Aktuelle Saarbrücker Restaurants bei OpenTable ansehen ↗' : '查看 OpenTable 萨尔布吕肯实时餐厅目录 ↗'}</a>
         <div className="filter-bar">
           <div className="filter-chips">{filters.map(([value,label])=><button key={value} className={filter===value?'active':''} onClick={()=>setFilter(value)}>{label}</button>)}{selectedDay!==null&&<button className="day-filter-clear" onClick={()=>setSelectedDay(null)}>{weekdays[lang][selectedDay]} · {t('openOn')} ×</button>}</div>
-          <div className="sort-wrap"><label>{t('sort')}</label><select value={sort} onChange={(e)=>setSort(e.target.value)}><option value="smart">{t('smart')}</option><option value="rating">{t('rating')}</option><option value="reviews">{t('reviewsSort')}</option><option value="site-rating" disabled={scoresStatus !== 'ready'}>{lang === 'en' ? 'Highest community rating' : lang === 'de' ? 'Beste Community-Bewertung' : '本站评分最高'}</option><option value="site-reviews" disabled={scoresStatus !== 'ready'}>{lang === 'en' ? 'Most community reviews' : lang === 'de' ? 'Meiste Community-Bewertungen' : '本站评论最多'}</option></select></div>
+          <div className="sort-wrap"><label>{t('sort')}</label><select value={sort} onChange={(e)=>setSort(e.target.value)}><option value="smart">{t('smart')}</option><option value="new">{t('newlyOpened')}</option><option value="rating">{t('rating')}</option><option value="reviews">{t('reviewsSort')}</option><option value="site-rating" disabled={scoresStatus !== 'ready'}>{lang === 'en' ? 'Highest community rating' : lang === 'de' ? 'Beste Community-Bewertung' : '本站评分最高'}</option><option value="site-reviews" disabled={scoresStatus !== 'ready'}>{lang === 'en' ? 'Most community reviews' : lang === 'de' ? 'Meiste Community-Bewertungen' : '本站评论最多'}</option></select></div>
         </div>
         <div className="cuisine-bar"><span>{t('cuisine')}</span><div className="cuisine-chips">{cuisineFilters.map(([value,label])=><button key={value} className={cuisine===value?'active':''} onClick={()=>setCuisine(value)}>{label}</button>)}</div></div>
         {view === 'map' && <div className="map-shell"><div className="map-heading"><p>{t('mapHint')}</p><span>{shown.filter(({place})=>Boolean(placeCoordinates[place.name])).length} {t('mapPlaces')}</span></div><MapView entries={shown} categoryFor={categoryFor} openMapLabel={t('openMap')} />{shown.some(({place})=>!placeCoordinates[place.name]) && <div className="unmapped-places"><strong>{lang === 'en' ? 'More places in this selection' : lang === 'de' ? 'Weitere Orte in dieser Auswahl' : '本次筛选的其他地点'}</strong>{shown.filter(({place})=>!placeCoordinates[place.name]).map(({place})=><a key={place.name} href={mapUrl(place)} target="_blank" rel="noreferrer">{place.name} · {place.address} ↗</a>)}</div>}</div>}
@@ -320,14 +348,14 @@ export default function Home() {
             <div className={`row-index tone-${index%4}`}>{String(index+1).padStart(2,'0')}</div>
             <a className="row-photo" href={mapUrl(place)} target="_blank" rel="noreferrer" aria-label={`在 Google Maps 查看 ${place.name}`}>
               <img src={mapImages[place.name] ?? restaurantPlaceholder} alt={place.name} loading="lazy" referrerPolicy="no-referrer" onError={(event)=>{event.currentTarget.src=restaurantPlaceholder;}} />
-              <span>{place.name === "Leidinger's Lust - Die Frühstücksmacher" ? t('recommendPhoto') : place.ratingSource === 'OpenTable' ? 'OPENTABLE' : place.sources.includes('推荐补充')?t('recommendPhoto'):t('photo')}</span>
+              <span>{place.photoIsIllustration ? t('illustration') : place.name === "Leidinger's Lust - Die Frühstücksmacher" ? t('recommendPhoto') : place.ratingSource === 'OpenTable' ? 'OPENTABLE' : place.sources.includes('推荐补充')?t('recommendPhoto'):t('photo')}</span>
             </a>
             <div className="row-main">
               <div className={`status ${status.state}`}><span/>{status.label} · {status.detail}</div>
-              <h3>{place.name}</h3><p>{placeCopy(place)[0]} · {place.address}</p>
+              <div className="row-title"><h3>{place.name}</h3>{place.openedOn && <span className="new-badge">✦ {t('newlyOpened')} · {place.openedOn.slice(5).replace('-', '.')}</span>}</div><p>{placeCopy(place)[0]} · {place.address}</p>
               <div className="source-list">{place.sources.map(source=><b key={source}>{sourceCopy(source)}</b>)}</div>
             </div>
-            <div className="row-scores"><div className="row-score"><strong>{place.rating}</strong><span>★ {place.ratingSource ?? 'Google'}</span><small>{place.reviews !== null ? `${place.reviews.toLocaleString(timeLocale)} ${t('reviewCount')}` : t('unknown')}</small></div>
+            <div className="row-scores"><div className="row-score"><strong>{place.rating ?? '—'}</strong><span>{place.rating === null ? t('noRating') : `★ ${place.ratingSource ?? 'Google'}`}</span><small>{place.reviews !== null ? `${place.reviews.toLocaleString(timeLocale)} ${t('reviewCount')}` : t('noReviewCount')}</small></div>
             <button type="button" className="row-score row-site-score" onClick={()=>setReviewPlace(place.name)} aria-label={`${place.name} · ${lang === 'en' ? 'Community reviews' : lang === 'de' ? 'Community-Bewertungen' : '本站评分与评论'}`}>
               <strong>{scoresStatus === 'ready' && siteScores[place.name] ? siteScores[place.name].average.toFixed(1) : '—'}</strong>
               <span>★ {lang === 'en' ? 'This site' : lang === 'de' ? 'Diese Seite' : '本站评分'}</span>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 480" role="img" aria-label="Berliner Döner by Kemo illustrated teaser">
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#e7b766"/><stop offset="1" stop-color="#ce714e"/></linearGradient>
+    <linearGradient id="bread" x2="0" y2="1"><stop stop-color="#ffe1a2"/><stop offset="1" stop-color="#cc8147"/></linearGradient>
+  </defs>
+  <rect width="720" height="480" fill="url(#bg)"/>
+  <circle cx="585" cy="86" r="125" fill="#f3d795" opacity=".45"/>
+  <circle cx="79" cy="389" r="145" fill="#9e5f42" opacity=".26"/>
+  <g transform="translate(358 250) rotate(-13)">
+    <ellipse cy="122" rx="215" ry="35" fill="#733e32" opacity=".2"/>
+    <path d="M-210 30 Q-180-160 0-152 Q180-160 210 30 Q105 90 0 98 Q-105 90-210 30Z" fill="url(#bread)" stroke="#8c4b30" stroke-width="7"/>
+    <path d="M-197 16 Q-55-17 42 19 Q135 45 197 14" fill="none" stroke="#fff1bb" stroke-width="24" stroke-linecap="round"/>
+    <path d="M-188 34 Q-100 12-18 53 Q86 18 185 32" fill="none" stroke="#724730" stroke-width="24" stroke-linecap="round"/>
+    <path d="M-178 46 Q-80 68 3 39 Q93 72 178 48" fill="none" stroke="#60844b" stroke-width="22" stroke-linecap="round"/>
+    <path d="M-163 61 Q-65 40 0 72 Q76 43 167 63" fill="none" stroke="#e9e2bb" stroke-width="15" stroke-linecap="round"/>
+    <path d="M-190 70 Q0 144 190 70" fill="none" stroke="#bd7045" stroke-width="58" stroke-linecap="round"/>
+    <path d="M-182 84 Q0 144 182 84" fill="none" stroke="#ffd897" stroke-width="11" stroke-linecap="round"/>
+  </g>
+  <rect x="22" y="22" width="274" height="62" rx="8" fill="#25352d"/>
+  <text x="42" y="62" fill="#fff8df" font-family="Arial,sans-serif" font-size="29" font-weight="800">BERLINER DÖNER</text>
+  <text x="31" y="455" fill="#25352d" font-family="Arial,sans-serif" font-size="32" font-weight="900">BY KEMO · SAARBRÜCKEN</text>
+</svg>

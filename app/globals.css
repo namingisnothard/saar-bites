@@ -208,6 +208,9 @@ h2 { margin:0; font-size:clamp(38px,5vw,72px); line-height:.98; letter-spacing:-
 .row-main,.row-score,.row-menu,.row-actions { padding:20px; }
 .row-main { border-right:1px solid var(--ink); }
 .row-main h3 { margin:14px 0 5px; font-size:clamp(22px,2.3vw,34px); line-height:1; letter-spacing:-.045em; }
+.row-title { display:flex; align-items:center; flex-wrap:wrap; column-gap:10px; }
+.row-title h3 { min-width:0; }
+.new-badge { display:inline-flex; align-items:center; width:max-content; margin:8px 0 3px; padding:5px 8px; border:1px solid var(--ink); border-radius:5px; background:var(--lime); color:var(--ink); font-size:9px; font-weight:900; letter-spacing:.02em; white-space:nowrap; }
 .row-main>p { margin:0; color:#657069; font-size:12px; }
 .source-list { display:flex; gap:5px; margin-top:15px; }
 .source-list b { padding:4px 7px; border-radius:4px; background:#eef0eb; font-size:8px; letter-spacing:.06em; text-transform:uppercase; }

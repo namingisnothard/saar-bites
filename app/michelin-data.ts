@@ -2,17 +2,20 @@ export type MichelinLocale = 'zh' | 'en' | 'de';
 type Copy = Record<MichelinLocale, string>;
 const l = (zh: string, en: string, de: string): Copy => ({ zh, en, de });
 
-export const michelinReviewedAt = '2026-09-21';
+export const michelinReviewedAt = '2026-10-05';
 export const michelinEdition = 2026;
 export const michelinSource = 'https://guide.michelin.com/de/de/article/michelin-guide-ceremony/alle-sternerestaurants---michelin-guide-deutschland-2026';
+export const michelinFranceSource = 'https://guide.michelin.com/fr/fr/article/michelin-guide-ceremony/la-liste-complete-des-etoiles-du-guide-michelin-france-2026';
 
 export type MichelinRestaurant = {
   id: string;
   name: string;
   stars: 1 | 2 | 3;
   city: string;
+  region?: 'france';
   address: string;
   cuisine: Copy;
+  highlight?: Copy;
   menu: { label: Copy; price: string }[];
   menuNote: Copy;
   menuUrl: string;
@@ -26,7 +29,9 @@ export type MichelinRestaurant = {
 };
 
 // Michelin distinctions: 2026 annual list above. Menus and booking details:
-// official venue sources, checked 2026-09-21; see docs/michelin-review-2026-09-21.md.
+// Saarland venue sources checked 2026-09-21; nearby French additions checked
+// 2026-10-05. See docs/michelin-review-2026-09-21.md and
+// docs/michelin-nearby-review-2026-10-05.md.
 export const michelinRestaurants: MichelinRestaurant[] = [
   {
     id: 'esplanade', name: 'ESPLANADE', stars: 2, city: 'Saarbrücken',
@@ -150,5 +155,84 @@ export const michelinRestaurants: MichelinRestaurant[] = [
     service: l('9 月 23 日起：周三至周六 18:00–23:00，周日 12:00–15:00；周一、周二休息。', 'From 23 September: Wed–Sat 18:00–23:00; Sun 12:00–15:00. Closed Mon–Tue.', 'Ab 23. September: Mi–Sa 18–23 Uhr; So 12–15 Uhr. Mo–Di geschlossen.'),
     notice: l('星级依据 2026 年指南；新主厨及新菜单为 9 月公布。新营业时间自 9 月 23 日生效。', 'Star status follows the 2026 guide. A new chef and menus were announced in September; the new hours take effect 23 September.', 'Stern laut Guide 2026. Neuer Küchenchef und neue Menüs im September angekündigt; neue Öffnungszeiten gelten ab 23. September.'),
     policyUrl: 'https://www.midi-restaurant.de/event/neuer-rhythmus-oeffnungszeiten-ab-23-september/',
+  },
+  {
+    id: 'saint-walfrid', name: 'Auberge Saint-Walfrid', stars: 1, city: 'Sarreguemines', region: 'france',
+    address: '58 rue de Grosbliederstroff, 57200 Sarreguemines, France',
+    cuisine: l('洛林传统法餐 · 当季食材', 'Classic Lorraine cuisine · seasonal produce', 'Klassische Küche aus Lothringen · saisonale Produkte'),
+    highlight: l('离萨尔布吕肯很近，适合第一次跨境吃星级法餐；主打法式经典与洛林食材。', 'A close cross-border choice for classic French dining and Lorraine produce.', 'Nahe an Saarbrücken: klassische französische Küche mit Produkten aus Lothringen.'),
+    menu: [
+      { label: l('午市探索套餐 · 两道菜加甜点', 'Discovery lunch · two courses plus dessert', 'Entdeckungsmenü mittags · zwei Gänge und Dessert'), price: '€58' },
+      { label: l('Menu MOSL', 'Menu MOSL', 'Menu MOSL'), price: '€128' },
+      { label: l("L'Éveil des Sens · 9 道菜", "L'Éveil des Sens · 9 courses", "L'Éveil des Sens · 9 Gänge"), price: '€198' },
+    ],
+    menuNote: l('午市探索套餐仅周三至周五供应，节假日除外；9 道菜套餐需全桌选择。请预订 Auberge 的星级 Gourmet 餐厅，不是 Brasserie du Casino。', 'The discovery lunch is served Wed–Fri, excluding public holidays; the nine-course menu is for the whole table. Book the starred Gourmet Restaurant, rather than Brasserie du Casino.', 'Das Entdeckungsmenü gibt es Mi–Fr mittags, außer an Feiertagen; das Neun-Gänge-Menü gilt für den ganzen Tisch. Bitte das ausgezeichnete Gourmet-Restaurant wählen, nicht die Brasserie du Casino.'),
+    menuUrl: 'https://www.stwalfrid.fr/de/menus', bookingUrl: 'https://www.stwalfrid.fr/de/contact',
+    booking: l('官网联系页提供订桌入口，也可电话或邮件预订。', 'Use the table reservation link on the official contact page, or book by phone/email.', 'Über den Tischreservierungslink auf der offiziellen Kontaktseite oder telefonisch/per E-Mail buchen.'),
+    phone: '+33 3 87 98 43 75', email: 'contact@stwalfrid.fr',
+    service: l('周二仅晚市 19:00–21:30；周三至周六午市 12:00–13:30、晚市 19:00–21:30；周日仅午市；周一休息。', 'Tue dinner 19:00–21:30; Wed–Sat lunch 12:00–13:30 and dinner 19:00–21:30; Sun lunch only; closed Mon.', 'Di nur abends 19–21:30 Uhr; Mi–Sa mittags 12–13:30 und abends 19–21:30 Uhr; So nur mittags; Mo geschlossen.'),
+  },
+  {
+    id: 'toya', name: 'Toya', stars: 1, city: 'Faulquemont', region: 'france',
+    address: 'Avenue Jean Monnet, 57380 Faulquemont, France',
+    cuisine: l('法式创意料理 · 日本风味与蔬菜', 'Creative French cooking · Japanese touches and vegetables', 'Kreative französische Küche · japanische Akzente und Gemüse'),
+    highlight: l('想吃更轻盈、更重视蔬菜的菜单可选这里；也有完整的植物性套餐。', 'Choose this for produce-led cooking with Japanese touches and a full plant-based menu.', 'Für eine produktorientierte Küche mit japanischen Akzenten und eigenem pflanzlichen Menü.'),
+    menu: [
+      { label: l('Menu Plaisir · 周三至周五午市', 'Menu Plaisir · Wed–Fri lunch', 'Menu Plaisir · Mi–Fr mittags'), price: '€80' },
+      { label: l('Menu Histoire / Terre vivante 素食', 'Menu Histoire / vegetarian Terre vivante', 'Menu Histoire / vegetarisches Terre vivante'), price: '€130' },
+      { label: l('Menu Nature', 'Menu Nature', 'Menu Nature'), price: '€170' },
+    ],
+    menuNote: l('菜单每周随食材调整；订位时告知饮食限制。官网菜单含五款餐前小点与两款餐后小点。', 'Menus change weekly with the produce; mention dietary needs when booking. The published menus include five snacks and two mignardises.', 'Die Menüs wechseln wöchentlich mit den Produkten; Ernährungswünsche bei der Reservierung angeben. Die Menüs enthalten fünf Snacks und zwei Mignardises.'),
+    menuUrl: 'https://toya-restaurant.fr/portfolio/nos-menus/', bookingUrl: 'https://toya-restaurant.fr/accueil/contact/',
+    booking: l('通过官网联系页的电话或邮件预订。', 'Book by phone or email using the official contact details.', 'Telefonisch oder per E-Mail über die offiziellen Kontaktdaten reservieren.'),
+    phone: '+33 3 87 89 34 22', email: 'reservations@toya-restaurant.fr',
+    service: l('周三至周六提供午市与晚市；周日至周二休息，具体入座时间请订位时确认。', 'Lunch and dinner Wed–Sat; closed Sun–Tue. Confirm available seating times when booking.', 'Mi–Sa mittags und abends; So–Di geschlossen. Die konkreten Servicezeiten bei der Reservierung bestätigen.'),
+  },
+  {
+    id: 'arnsbourg', name: "L’Arnsbourg", stars: 1, city: 'Baerenthal', region: 'france',
+    address: '18 Untermuhlthal, 57230 Baerenthal, France',
+    cuisine: l('森林系法餐 · 当季食材与亚洲灵感', 'Seasonal French cuisine · Asian influences', 'Saisonale französische Küche · asiatische Einflüsse'),
+    highlight: l('把用餐和北孚日森林之行放在一起；餐厅玻璃大厅面向林景。', 'Make a forest outing of it: the dining room looks onto the Northern Vosges landscape.', 'Für einen Ausflug in die Nordvogesen: Der Gastraum öffnet sich zur Waldlandschaft.'),
+    menu: [
+      { label: l('Menu Plaisir · 周四、周五午市', 'Menu Plaisir · Thu–Fri lunch', 'Menu Plaisir · Do–Fr mittags'), price: '—' },
+      { label: l('Menu Partition / Intuition', 'Menu Partition / Intuition', 'Menu Partition / Intuition'), price: '—' },
+    ],
+    menuNote: l('官网列出 Plaisir、Partition 和 Intuition 套餐，但未在文字版菜单公开当前价格；请在订位时确认。', 'The official site lists Plaisir, Partition and Intuition menus without current prices in its text menu; confirm the price when booking.', 'Die offizielle Seite nennt Plaisir, Partition und Intuition ohne aktuelle Preise in der Textkarte; Preise bei Buchung bestätigen.'),
+    menuUrl: 'https://www.arnsbourg.com/fr/restaurant-gastronomique-moselle.html',
+    bookingUrl: 'https://app.overfull.fr/booking-v2/?key_id=VpTGQURuo7J&lang=fr&source=Web',
+    booking: l('通过餐厅官网链接的 Overfull 在线订位，或电话、邮件联系。', 'Book through the Overfull link on the official site, or contact the restaurant by phone/email.', 'Über den Overfull-Link der offiziellen Website oder telefonisch/per E-Mail reservieren.'),
+    phone: '+33 3 87 06 50 85', email: 'contact@arnsbourg.com',
+    service: l('周三仅晚市；周四至周日午、晚市；周一、周二休息。', 'Wed dinner only; Thu–Sun lunch and dinner; closed Mon–Tue.', 'Mi nur abends; Do–So mittags und abends; Mo–Di geschlossen.'),
+    notice: l('官网公告：2026 年 10 月 18 日晚至 27 日休业，10 月 28 日晚恢复。', 'Official notice: closed from the evening of 18 October through 27 October 2026; reopens for dinner 28 October.', 'Laut Website vom Abend des 18. bis 27. Oktober 2026 geschlossen; Wiedereröffnung am 28. Oktober abends.'),
+  },
+  {
+    id: 'yozora', name: 'Yozora', stars: 1, city: 'Metz', region: 'france',
+    address: "Centre Pompidou-Metz, 1 parvis des Droits de l’Homme, 57000 Metz, France",
+    cuisine: l('法日融合 · Omakase 品鉴', 'French-Japanese · omakase tasting', 'Französisch-japanisch · Omakase-Menü'),
+    highlight: l('适合把现代艺术馆与晚餐连成一次行程；主厨以日式 omakase 方式演绎法国食材。', 'Pair a visit to Centre Pompidou-Metz with a French-Japanese omakase dinner.', 'Ein Besuch im Centre Pompidou-Metz lässt sich mit einem französisch-japanischen Omakase-Abend verbinden.'),
+    menu: [
+      { label: l('Ikebana / Yozora / Tsuki', 'Ikebana / Yozora / Tsuki', 'Ikebana / Yozora / Tsuki'), price: '€95 / €135 / €175' },
+    ],
+    menuNote: l('官网提供三档主厨品鉴菜单，菜式随季节变化。6 人以上需包场；忌口请订位时说明。', 'Three chef-led tasting formats are published; dishes change with the season. Groups over six require a private booking; flag dietary needs when reserving.', 'Drei Degustationsmenüs laut Website; Gerichte wechseln saisonal. Ab sieben Gästen ist eine Privatisierung nötig; Ernährungswünsche bei Buchung nennen.'),
+    menuUrl: 'https://restaurant-yozora.com/fr/restaurant-chic-metz.html',
+    bookingUrl: 'https://bookings.zenchef.com/results?pid=1001&rid=364834',
+    booking: l('通过官网 Zenchef 订位；超过 6 人请邮件联系包场。', 'Book through the official Zenchef link; email for private bookings of more than six guests.', 'Über den offiziellen Zenchef-Link buchen; für mehr als sechs Gäste per E-Mail zur Privatisierung anfragen.'),
+    phone: '+33 3 87 78 68 96', email: 'contact@restaurant-yozora.com',
+    service: l('周三至周日仅晚市；周一、周二休息。', 'Dinner Wed–Sun only; closed Mon–Tue.', 'Nur Abendservice Mi–So; Mo–Di geschlossen.'),
+  },
+  {
+    id: 'la-merise', name: 'La Merise', stars: 2, city: 'Laubach', region: 'france',
+    address: '7 rue d’Eschbach, 67580 Laubach, France',
+    cuisine: l('阿尔萨斯食材 · 现代法餐', 'Alsatian produce · modern French cuisine', 'Elsässische Produkte · moderne französische Küche'),
+    highlight: l('想专程吃一顿两星套餐可选这里；周四、周五还有价格较低的午市。', 'A two-star destination with a shorter, lower-priced Thursday and Friday lunch.', 'Ein Zwei-Sterne-Ziel mit kürzerem Mittagsmenü am Donnerstag und Freitag.'),
+    menu: [
+      { label: l('午市 · 三道 / 含奶酪四道', 'Lunch · three / four courses with cheese', 'Mittags · drei / vier Gänge mit Käse'), price: '€98 / €128' },
+      { label: l('La Merise · 5 / 7 道', 'La Merise · 5 / 7 courses', 'La Merise · 5 / 7 Gänge'), price: '€175 / €225' },
+    ],
+    menuNote: l('午市仅周四、周五供应，节假日除外。官网注明价格与菜式可能随市场及季节调整；酒水及加菜另计。', 'Lunch is offered Thu–Fri, excluding public holidays. The venue notes that dishes and prices may change with markets and seasons; drinks and supplements are extra.', 'Mittagsmenü Do–Fr außer an Feiertagen. Gerichte und Preise können sich laut Restaurant mit Markt und Saison ändern; Getränke und Extras kosten zusätzlich.'),
+    menuUrl: 'https://lamerise.alsace/les-menus/', bookingUrl: 'https://lamerise.alsace/les-menus/',
+    booking: l('官网菜单页提供在线订位入口，也可电话或邮件预订。', 'Use the online reservation link on the official menu page, or book by phone/email.', 'Über den Reservierungslink auf der offiziellen Menüseite oder telefonisch/per E-Mail buchen.'),
+    phone: '+33 3 88 90 02 61', email: 'info@lamerise.alsace',
+    service: l('周四至周日午市与晚市；周一至周三休息。', 'Lunch and dinner Thu–Sun; closed Mon–Wed.', 'Do–So mittags und abends; Mo–Mi geschlossen.'),
   },
 ];
