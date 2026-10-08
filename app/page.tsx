@@ -155,7 +155,7 @@ export default function Home() {
     if (lang === 'de') return source === 'Café' ? 'Café-Liste' : source === '推荐补充' ? 'Empfohlen' : 'Saarbrücken';
     return source === '推荐补充' ? '补充推荐' : source;
   };
-  const filters = [['all',t('all')],['new',t('newlyOpened')],['restaurant',t('restaurant')],['opentable','OpenTable'],['cafe',t('cafe')],['bakery',t('bakery')],['starred',t('starred')]];
+  const filters = [['all',t('all')],['new',t('recentOpenings')],['restaurant',t('restaurant')],['opentable','OpenTable'],['cafe',t('cafe')],['bakery',t('bakery')],['starred',t('starred')]];
   const cuisineFilters = [['all',t('cuisineAll')],['chinese',t('chinese')],['asian',t('asian')],['mediterranean',t('mediterranean')],['german',t('german')],['cafeBrunch',t('cafeBrunch')],['sweets',t('sweets')],['italian',t('italian')],['grill',t('grill')],['global',t('global')]];
 
   const enriched = useMemo(() => places.map((place) => ({ place, status:getStatus(place,now,lang) })), [now,lang]);
@@ -182,15 +182,15 @@ export default function Home() {
     const list = enriched.filter(({place,status}) => {
       const localized = placeCopy(place);
       const matchesText = `${place.name} ${place.category} ${localized[0]} ${place.menuNote} ${localized[1]} ${place.address}`.toLowerCase().includes(needle);
-      const matchesFilter = filter === 'all' || (filter === 'new' ? Boolean(place.openedOn) : filter === 'starred' ? place.sources.includes('Starred') : filter === 'opentable' ? place.sources.includes('OpenTable') : filter === 'bakery' ? ['bakery','dessert'].includes(place.group) : place.group === filter);
+      const matchesFilter = filter === 'all' || (filter === 'new' ? Boolean(place.openedOn || place.reopenedOn) : filter === 'starred' ? place.sources.includes('Starred') : filter === 'opentable' ? place.sources.includes('OpenTable') : filter === 'bakery' ? ['bakery','dessert'].includes(place.group) : place.group === filter);
       const matchesCuisine = cuisine === 'all' || cuisineTags(place).includes(cuisine);
       const matchesDay = selectedDay === null || (place.schedule?.[selectedDay]?.length ?? 0) > 0;
       return matchesText && matchesFilter && matchesCuisine && matchesDay && (!openOnly || status.state === 'open');
     });
     return list.sort((a,b) => {
-      if (filter === 'new' && sort === 'smart') return (b.place.openedOn ?? '').localeCompare(a.place.openedOn ?? '');
+      if (filter === 'new' && sort === 'smart') return (b.place.openedOn ?? b.place.reopenedOn ?? '').localeCompare(a.place.openedOn ?? a.place.reopenedOn ?? '');
       if (sort === 'new') {
-        const openingOrder = (b.place.openedOn ?? '').localeCompare(a.place.openedOn ?? '');
+        const openingOrder = (b.place.openedOn ?? b.place.reopenedOn ?? '').localeCompare(a.place.openedOn ?? a.place.reopenedOn ?? '');
         if (openingOrder) return openingOrder;
       }
       if (sort === 'site-rating' || sort === 'site-reviews') return compareCommunity(a.place.name,b.place.name,siteScores,sort);
@@ -339,7 +339,7 @@ export default function Home() {
         <a className="opentable-directory" href="https://www.opentable.de/region/saarbrucken-restaurants" target="_blank" rel="noreferrer">{lang === 'en' ? 'Browse the live OpenTable Saarbrücken directory ↗' : lang === 'de' ? 'Aktuelle Saarbrücker Restaurants bei OpenTable ansehen ↗' : '查看 OpenTable 萨尔布吕肯实时餐厅目录 ↗'}</a>
         <div className="filter-bar">
           <div className="filter-chips">{filters.map(([value,label])=><button key={value} className={filter===value?'active':''} onClick={()=>setFilter(value)}>{label}</button>)}{selectedDay!==null&&<button className="day-filter-clear" onClick={()=>setSelectedDay(null)}>{weekdays[lang][selectedDay]} · {t('openOn')} ×</button>}</div>
-          <div className="sort-wrap"><label>{t('sort')}</label><select value={sort} onChange={(e)=>setSort(e.target.value)}><option value="smart">{t('smart')}</option><option value="new">{t('newlyOpened')}</option><option value="rating">{t('rating')}</option><option value="reviews">{t('reviewsSort')}</option><option value="site-rating" disabled={scoresStatus !== 'ready'}>{lang === 'en' ? 'Highest community rating' : lang === 'de' ? 'Beste Community-Bewertung' : '本站评分最高'}</option><option value="site-reviews" disabled={scoresStatus !== 'ready'}>{lang === 'en' ? 'Most community reviews' : lang === 'de' ? 'Meiste Community-Bewertungen' : '本站评论最多'}</option></select></div>
+          <div className="sort-wrap"><label>{t('sort')}</label><select value={sort} onChange={(e)=>setSort(e.target.value)}><option value="smart">{t('smart')}</option><option value="new">{t('recentOpenings')}</option><option value="rating">{t('rating')}</option><option value="reviews">{t('reviewsSort')}</option><option value="site-rating" disabled={scoresStatus !== 'ready'}>{lang === 'en' ? 'Highest community rating' : lang === 'de' ? 'Beste Community-Bewertung' : '本站评分最高'}</option><option value="site-reviews" disabled={scoresStatus !== 'ready'}>{lang === 'en' ? 'Most community reviews' : lang === 'de' ? 'Meiste Community-Bewertungen' : '本站评论最多'}</option></select></div>
         </div>
         <div className="cuisine-bar"><span>{t('cuisine')}</span><div className="cuisine-chips">{cuisineFilters.map(([value,label])=><button key={value} className={cuisine===value?'active':''} onClick={()=>setCuisine(value)}>{label}</button>)}</div></div>
         {view === 'map' && <div className="map-shell"><div className="map-heading"><p>{t('mapHint')}</p><span>{shown.filter(({place})=>Boolean(placeCoordinates[place.name])).length} {t('mapPlaces')}</span></div><MapView entries={shown} categoryFor={categoryFor} openMapLabel={t('openMap')} />{shown.some(({place})=>!placeCoordinates[place.name]) && <div className="unmapped-places"><strong>{lang === 'en' ? 'More places in this selection' : lang === 'de' ? 'Weitere Orte in dieser Auswahl' : '本次筛选的其他地点'}</strong>{shown.filter(({place})=>!placeCoordinates[place.name]).map(({place})=><a key={place.name} href={mapUrl(place)} target="_blank" rel="noreferrer">{place.name} · {place.address} ↗</a>)}</div>}</div>}
@@ -352,7 +352,7 @@ export default function Home() {
             </a>
             <div className="row-main">
               <div className={`status ${status.state}`}><span/>{status.label} · {status.detail}</div>
-              <div className="row-title"><h3>{place.name}</h3>{place.openedOn && <span className="new-badge">✦ {t('newlyOpened')} · {place.openedOn.slice(5).replace('-', '.')}</span>}</div><p>{placeCopy(place)[0]} · {place.address}</p>
+              <div className="row-title"><h3>{place.name}</h3>{(place.openedOn || place.reopenedOn) && <span className="new-badge">✦ {t(place.reopenedOn ? 'newlyReopened' : 'newlyOpened')} · {(place.openedOn ?? place.reopenedOn)!.slice(5).replace('-', '.')}</span>}</div><p>{placeCopy(place)[0]} · {place.address}</p>
               <div className="source-list">{place.sources.map(source=><b key={source}>{sourceCopy(source)}</b>)}</div>
             </div>
             <div className="row-scores"><div className="row-score"><strong>{place.rating ?? '—'}</strong><span>{place.rating === null ? t('noRating') : `★ ${place.ratingSource ?? 'Google'}`}</span><small>{place.reviews !== null ? `${place.reviews.toLocaleString(timeLocale)} ${t('reviewCount')}` : t('noReviewCount')}</small></div>

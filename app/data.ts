@@ -18,6 +18,7 @@ export type Place = {
   temporaryClosure?: { from: string; through: string; resume: string };
   scheduleExceptions?: Record<string, Interval[]>;
   openedOn?: string;
+  reopenedOn?: string;
   photoIsIllustration?: boolean;
 };
 
@@ -26,9 +27,15 @@ const q = (name: string) => `https://www.google.com/maps/search/?api=1&query=${e
 const asset = (file: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/${file}`;
 export const restaurantPlaceholder = asset('restaurant-placeholder.svg');
 
-export const contentReviewedAt = '2026-10-05';
+export const contentReviewedAt = '2026-10-08';
 
 export const places: Place[] = [
+  // Additions reviewed 2026-10-08; see docs/opening-review-2026-10-08.md.
+  {"name": "Jouliard", "category": "法式 · Bistro", "group": "restaurant", "rating": null, "reviews": null, "sources": ["推荐补充"], "address": "Scheidter Straße 66, 66123 Saarbrücken", "website": "https://www.jouliard.de/", "menu": "https://www.jouliard.de/", "menuNote": "4 月 8 日新团队重开 · 官网：周二、周三 18–22；周四至周六 12–14、18–22；周日、周一休息。电话预约 0681 59590688；纯素菜需提前预订。", "schedule": [[], [], [["18:00", "22:00"]], [["18:00", "22:00"]], [["12:00", "14:00"], ["18:00", "22:00"]], [["12:00", "14:00"], ["18:00", "22:00"]], [["12:00", "14:00"], ["18:00", "22:00"]]], "reopenedOn": "2026-04-08"},
+  {"name": "Goni’s Grill Haus", "category": "Grill · 餐厅", "group": "restaurant", "rating": null, "reviews": null, "sources": ["推荐补充"], "address": "Saarbrücker Straße 273, 66125 Saarbrücken", "website": "https://www.neueroeffnung.info/saarbruecken/gonis-grill-haus", "menuNote": "开业目录列 8 月 8 日开业；周二、周四、周六 11–23，周五 11–14、17–23；周一、周三休息，未列周日，请向店家确认。", "schedule": null, "openedOn": "2026-08-08"},
+  {"name": "Riva Italia", "category": "意式 · Café · Aperitivo", "group": "cafe", "rating": null, "reviews": null, "sources": ["推荐补充", "Café"], "address": "Herbergsgasse 4, 66111 Saarbrücken", "website": "https://www.neueroeffnung.info/saarbruecken/riva-italia-cafe", "menuNote": "开业目录列 3 月 28 日开业 · 咖啡、早餐、Antipasti 与葡萄酒；目录仅列周一、周三至周日时段，周二未核实。", "schedule": null, "openedOn": "2026-03-28"},
+  {"name": "Casa Anatolia Restaurant", "category": "餐厅", "group": "restaurant", "rating": null, "reviews": null, "sources": ["推荐补充"], "address": "Vorstadtstraße 33, 66117 Saarbrücken", "website": "https://www.neueroeffnung.info/saarbruecken/casa-anatolia-restaurant", "menuNote": "开业目录 3 月 25 日更新确认 3 月 22 日开业，列每日 12–22；营业时间据第三方目录，请向店家确认。", "schedule": [[["12:00", "22:00"]], [["12:00", "22:00"]], [["12:00", "22:00"]], [["12:00", "22:00"]], [["12:00", "22:00"]], [["12:00", "22:00"]], [["12:00", "22:00"]]], "openedOn": "2026-03-22"},
+
   // OpenTable Saarbrücken listings checked 2026-09-24. Ratings/counts are OpenTable snapshots, not Google scores.
   {name:'Casino am Staden',category:'现代欧陆 · 法式 · 葡萄酒',group:'restaurant',rating:4.6,ratingSource:'OpenTable',reviews:50,sources:['OpenTable'],address:'Bismarckstraße 47, 66121 Saarbrücken',website:'https://www.casino-staden.de/',booking:'https://www.opentable.de/r/casino-am-staden-saarbrucken',menuNote:'时令法式与地中海菜 · 午餐周三至周日 11:30–14:30；晚餐 18:00–21:30',schedule:d([['11:30','14:30'],['18:00','21:30']],[],[],[['11:30','14:30'],['18:00','21:30']],[['11:30','14:30'],['18:00','21:30']],[['11:30','14:30'],['18:00','21:30']],[['11:30','14:30'],['18:00','21:30']])},
   {name:'Ti Amo - Trattoria',category:'意大利 · Trattoria',group:'restaurant',rating:4.4,ratingSource:'OpenTable',reviews:150,sources:['OpenTable'],address:'St. Johanner Markt 5, 66111 Saarbrücken',website:'https://www.tiamo-sb.de/',booking:'https://www.opentable.de/r/ti-amo-trattoria-saarbrucken',menuNote:'意式小份分享料理、Pasta 与 Pizza · 周五及周六营业至午夜',schedule:d([['11:30','23:00']],[['11:30','23:00']],[['11:30','23:00']],[['11:30','23:00']],[['11:30','23:00']],[['11:30','24:00']],[['11:30','24:00']])},
@@ -48,7 +55,7 @@ export const places: Place[] = [
   {name:'Hotel Restaurant Angelo',category:'现代意大利 · 地中海',group:'restaurant',rating:4.7,ratingSource:'OpenTable',reviews:13,sources:['OpenTable'],address:'Saargemünder Straße 28, 66129 Saarbrücken',website:'https://www.angelo-sb.de/',booking:'https://www.opentable.de/r/hotel-restaurant-angelo-saarbrucken',menuNote:'意式与地中海菜 · 周一至周五午餐及晚餐',schedule:d([], ...Array.from({length:5},()=>[['12:00','14:30'],['18:00','21:00']] as Interval[]),[])},
   {name:"Leidinger's Lust - Die Frühstücksmacher",category:'早餐 · Buffet',group:'restaurant',rating:4.3,ratingSource:'OpenTable',reviews:7,sources:['OpenTable'],address:'Mainzer Straße 12, 66111 Saarbrücken',website:'https://leidinger-saarbruecken.de/essen2/',booking:'https://www.opentable.de/solivo',menuNote:'酒店官网早餐 Buffet：周一至周五 06:30–11:00，周末及节假日 07:00–13:00',schedule:d([['07:00','13:00']],...Array.from({length:5},()=>[['06:30','11:00']] as Interval[]),[['07:00','13:00']])},
   {name:'Le Flâneur',category:'法式 · Bistro',group:'restaurant',rating:5.0,reviews:12,sources:['推荐补充'],address:'Sankt Johanner Markt 7–9, 66111 Saarbrücken',website:'https://www.le-flaneur.de/',menu:'https://www.le-flaneur.de/speisekarte',menuNote:'9 月 28 日开业 · 官网营业时间：周日至周四 11:30–23:00，周五及周六 11:30–24:00',schedule:d([['11:30','23:00']],...Array.from({length:4},()=>[['11:30','23:00']] as Interval[]),[['11:30','24:00']],[['11:30','24:00']]),openedOn:'2026-09-28'},
-  {name:'Halbmond Restaurant',category:'阿拉伯 · 也门菜 · Café',group:'restaurant',rating:4.6,reviews:562,sources:['推荐补充'],address:'Fröschengasse 18, 66111 Saarbrücken',website:'https://www.halbmondrestaurant.de/',menuNote:'官网宣布 10 月 5 日起每日 11:30–22:30 营业；也门特色菜与屋顶露台',schedule:d(...Array.from({length:7},()=>[['11:30','22:30']] as Interval[]))},
+  {name:'Halbmond Restaurant',category:'阿拉伯 · 也门菜 · Café',group:'restaurant',rating:4.6,reviews:562,sources:['推荐补充'],address:'Fröschengasse 18, 66111 Saarbrücken',website:'https://www.halbmondrestaurant.de/',menuNote:'官网宣布 10 月 5 日起每日 11:30–22:30 营业；也门特色菜与屋顶露台',reopenedOn:'2026-10-05',schedule:d(...Array.from({length:7},()=>[['11:30','22:30']] as Interval[]))},
   {name:'Mangal Döner x Lukas Podolski',category:'Döner · 快餐',group:'restaurant',rating:4.3,reviews:75,sources:['推荐补充'],address:'Sulzbachstraße 2, 66111 Saarbrücken',website:'https://mangal-lp10.de/',menuNote:'RADIO SALÜ 确认 9 月 18 日在原 Café Schubert 开业；Google Maps 列周日至周四至 23:00、周五周六至次日 01:00',schedule:d([['12:00','23:00']],...Array.from({length:4},()=>[['11:30','23:00']] as Interval[]),[['11:30','25:00']],[['11:30','25:00']]),scheduleSource:'Google Maps',openedOn:'2026-09-18'},
   {name:'Why Not Sushi',category:'日式 · Sushi',group:'restaurant',rating:3.0,reviews:18,sources:['推荐补充'],address:'Bahnhofstraße 58, 66111 Saarbrücken',website:'https://wolt.com/de/deu/saarbrucken/restaurant/why-not-sushi',menuNote:'9 月 12 日开业资讯；Wolt 已上线菜单与配送，配送时间不等于堂食营业时间',schedule:null,openedOn:'2026-09-12'},
   {name:'Sneaky',category:'街头小吃 · Burger · Tacos',group:'restaurant',rating:4.6,reviews:56,sources:['推荐补充'],address:'Kaltenbachstraße 3, 66111 Saarbrücken',website:'https://www.neueroeffnung.info/saarbruecken/sneaky-street-food-laden',menuNote:'9 月 1 日开业 · Burger、Birria Tacos 与冰淇淋；营业时段据开业目录，SR 报道对周五、周六打烊时间有不同记录',schedule:d([],[],[['12:00','22:00']],[['12:00','22:00']],[['12:00','22:00']],[['12:00','24:00']],[['12:00','24:00']]),openedOn:'2026-09-01'},
@@ -186,6 +193,11 @@ export const placeCoordinates: Record<string, [number, number]> = {
 };
 
 export const mapImages: Record<string, string> = {
+  // Actual venue/dish photos; sources recorded in docs/opening-review-2026-10-08.md.
+  'Jouliard':asset('venue-jouliard.webp'),
+  'Goni’s Grill Haus':asset('venue-gonis-grill-haus.jpg'),
+  'Riva Italia':asset('venue-riva-italia.jpg'),
+  'Casa Anatolia Restaurant':asset('venue-casa-anatolia.jpg'),
   'Le Flâneur':asset('le-flaneur.jpg'),
   'Halbmond Restaurant':asset('halbmond-restaurant.jpg'),
   'Mangal Döner x Lukas Podolski':asset('mangal-lp10.png'),
@@ -270,18 +282,22 @@ export const mapImages: Record<string, string> = {
   'BABAQ':asset('venue-babaq.jpg'),
 };
 
-// Opening reports reviewed 2026-10-05; each item links to its supporting source.
+// Opening reports reviewed 2026-10-08; each item links to its supporting source.
 export const openingNews: { date:string; state:string; name:string; category:string; address:string; note:string; url:string; detailsUrl?:string }[] = [
   {date:'05 OCT 2026',state:'官网宣布重开',name:'Halbmond Restaurant',category:'阿拉伯 · 也门菜 · Café',address:'Fröschengasse 18, 66111 Saarbrücken',note:'官网宣布 10 月 5 日起每日 11:30–22:30 营业，并上线新菜单。',url:'https://www.halbmondrestaurant.de/'},
-  {"date":"01 OCT 2026","state":"重开日期待核实","name":"Dampfschiff","category":"Bar · 酒吧","address":"Saarstraße 8, 66111 Saarbrücken","note":"此前计划 10 月 1 日在原 Sake 餐厅重开；截至 10 月 5 日未找到可核实的实际开业公告，请联系店家。","url":"https://www.neueroeffnung.info/saarbruecken/dampfschiff-bar"},
+  {"date":"01 OCT 2026","state":"重开日期待核实","name":"Dampfschiff","category":"Bar · 酒吧","address":"Saarstraße 8, 66111 Saarbrücken","note":"此前计划 10 月 1 日在原 Sake 餐厅重开；截至 10 月 8 日未找到可核实的实际开业公告，请联系店家。","url":"https://www.neueroeffnung.info/saarbruecken/dampfschiff-bar"},
   {date:'28 SEP 2026',state:'已开业',name:'Le Flâneur',category:'法式 · Bistro',address:'Sankt-Johanner-Markt 7–9, 66111 Saarbrücken',note:'开业资讯确认 9 月 28 日开业；官网现有菜单，周日至周四 11:30–23:00，周五及周六至午夜。',url:'https://www.le-flaneur.de/'},
   {"date":"18 SEP 2026","state":"已开业","name":"Mangal Döner x Lukas Podolski","category":"Döner · 快餐","address":"Sulzbachstraße 2, 66111 Saarbrücken","note":"RADIO SALÜ 于 9 月 18 日报道已开业，入驻原 Café Schubert；与 Berliner Promenade 的 Mangal Mezze & Grill 是不同店家。","url":"https://www.salue.de/nachrichten/message-258387.phtml"},
   {"date":"12 SEP 2026","state":"已上线点餐","name":"Why Not Sushi","category":"日式 · Sushi","address":"Bahnhofstraße 58, 66111 Saarbrücken","note":"开业资讯列出 9 月 12 日；截至 9 月 21 日 Wolt 已有本店菜单、地址与配送时段。堂食营业时间请向店家确认。","url":"https://wolt.com/de/deu/saarbrucken/restaurant/why-not-sushi"},
   {date:'01 SEP 2026',state:'已开业',name:'Sneaky',category:'街头小吃 · Burger · Tacos',address:'Kaltenbachstraße 3, 66111 Saarbrücken',note:'开业资讯网站 9 月 12 日更新确认于 9 月 1 日开业；Kalinski 团队新店，提供汉堡、Tacos、冰淇淋与奶昔外带。',url:'https://www.neueroeffnung.info/saarbruecken/sneaky-street-food-laden'},
+  {"date": "08 AUG 2026", "state": "开业资讯", "name": "Goni’s Grill Haus", "category": "Grill · 餐厅", "address": "Saarbrücker Straße 273, 66125 Saarbrücken", "note": "开业目录列 8 月 8 日开业；周二、周四、周六 11–23，周五 11–14、17–23；周一、周三休息，未列周日，请向店家确认。", "url": "https://www.neueroeffnung.info/saarbruecken/gonis-grill-haus"},
   {date:'07 AUG 2026',state:'已开业',name:'Amidos & Helmi',category:'突尼斯 · 地中海 · Burger',address:'Mainzer Straße 102, 66121 Saarbrücken',note:'官网公布 8 月 7 日开业，主打突尼斯家常菜、Couscous 与 Grill/Burger。',url:'https://amidos-helmi.de/'},
   {date:'01 AUG 2026',state:'已开业',name:'Berliner Döner by Kemo',category:'Döner · 快餐',address:'Bergstraße 68, 66115 Saarbrücken',note:'开业资讯网站列出 8 月 1 日开业，位于 Burbach 的 Döner 小店；营业详情请向店家确认。',url:'https://www.neueroeffnung.info/saarbruecken/berliner-doener-by-kemo'},
   {date:'07 JUL 2026',state:'已开业',name:'Pasteria al Dente',category:'意式 · Pasta',address:'Sankt-Johanner-Markt 22, 66111 Saarbrücken',note:'据开业资讯网站，原定春季的开业计划因装修延期至 7 月 7 日；位于 Stengelbrunnen 对面。',url:'https://www.neueroeffnung.info/saarbruecken/pasteria-al-dente'},
   {date:'15 JUN 2026',state:'已开业',name:'Schnitzery',category:'Schnitzel · 快餐',address:'Berliner Promenade 18, 66111 Saarbrücken',note:'开业资讯网站于 7 月确认，这家 Berliner Promenade 新店已在 6 月 15 日开业。',url:'https://www.neueroeffnung.info/saarbruecken/schnitzery_6'},
+  {"date": "08 APR 2026", "state": "新团队重开", "name": "Jouliard", "category": "法式 · Bistro", "address": "Scheidter Straße 66, 66123 Saarbrücken", "note": "4 月 8 日新团队重开 · 官网：周二、周三 18–22；周四至周六 12–14、18–22；周日、周一休息。电话预约 0681 59590688；纯素菜需提前预订。", "url": "https://www.neueroeffnung.info/saarbruecken/jouliard-bistro"},
+  {"date": "28 MAR 2026", "state": "开业资讯", "name": "Riva Italia", "category": "意式 · Café · Aperitivo", "address": "Herbergsgasse 4, 66111 Saarbrücken", "note": "开业目录列 3 月 28 日开业 · 咖啡、早餐、Antipasti 与葡萄酒；目录仅列周一、周三至周日时段，周二未核实。", "url": "https://www.neueroeffnung.info/saarbruecken/riva-italia-cafe"},
+  {"date": "22 MAR 2026", "state": "开业资讯", "name": "Casa Anatolia Restaurant", "category": "餐厅", "address": "Vorstadtstraße 33, 66117 Saarbrücken", "note": "开业目录 3 月 25 日更新确认 3 月 22 日开业，列每日 12–22；营业时间据第三方目录，请向店家确认。", "url": "https://www.neueroeffnung.info/saarbruecken/casa-anatolia-restaurant"},
 ];
 
 export const newsletters = [
