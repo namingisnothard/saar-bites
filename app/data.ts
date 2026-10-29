@@ -30,6 +30,16 @@ export const restaurantPlaceholder = asset('restaurant-placeholder.svg');
 export const contentReviewedAt = '2026-10-08';
 
 export const places: Place[] = [
+  // Six additions reviewed 2026-10-29; see docs/list-additions-2026-10-29.md.
+  {"name": "Musaïq", "category": "摩洛哥 · 地中海 · 素食友好", "group": "restaurant", "rating": 4.7, "reviews": 47, "sources": ["推荐补充"], "address": "Nauwieserstraße 19, 66111 Saarbrücken", "website": "https://www.xn--musaq-fta.de/", "menu": "https://www.xn--musaq-fta.de/wp-content/uploads/go-x/u/a02a6f4b-2876-4ee8-8e54-82e47b772f10/Speisekarte-Musaiq-Winter.pdf", "menuNote": "官网：周二至周六 15–24、周日 14–22，周一休息；17–22 正餐，22 点后为酒吧。Paella、Tajine 与 Couscous 需预订。 Google 4.7 / 47 为第三方快照，非实时评分。", "schedule": [[["14:00", "22:00"]], [], [["15:00", "24:00"]], [["15:00", "24:00"]], [["15:00", "24:00"]], [["15:00", "24:00"]], [["15:00", "24:00"]]]},
+  {"name": "Restaurant Hashimoto", "category": "日料 · Sushi · Teppanyaki", "group": "restaurant", "rating": 4.6, "reviews": 377, "sources": ["推荐补充"], "address": "Cecilienstraße 7, 66111 Saarbrücken", "website": "https://hashimoto-saar.de/", "menu": "https://hashimoto-saar.de/speisekarte-hashimoto-saarbruecken/", "menuNote": "官网：周二、周三、周六 18:30–22；周五、周日另有 12–14 午市；周一、周四休息。11 月 1 日、15 日全天休息。Teppanyaki 仅周五晚至周日、需预约。 Google 4.6 / 377 为第三方快照，非实时评分。", "schedule": [[["12:00", "14:00"], ["18:30", "22:00"]], [], [["18:30", "22:00"]], [["18:30", "22:00"]], [], [["12:00", "14:00"], ["18:30", "22:00"]], [["18:30", "22:00"]]], "scheduleExceptions": {"2026-11-01": [], "2026-11-15": []}},
+  {"name": "Izakaya Hashimoto", "category": "日式居酒屋 · 小份分享料理", "group": "restaurant", "rating": 4.6, "reviews": 236, "sources": ["推荐补充"], "address": "Fröschengasse 1, 66111 Saarbrücken", "website": "https://hashimoto-saar.de/", "menu": "https://hashimoto-saar.de/speisekarte-izakaya-saarbruecken/", "menuNote": "官网列午市 12–14:30、晚市 18–22；自 8 月起不定休，每月休息日请查看 Instagram @izakaya_hashimoto，暂不计算实时营业状态。 Google 4.6 / 236 为第三方快照，非实时评分。", "schedule": null},
+  {"name": "Gasthaus Zahm", "category": "萨尔兰 · 德法家常菜", "group": "restaurant", "rating": 4.6, "reviews": 916, "sources": ["推荐补充"], "address": "Saarstraße 6, 66111 Saarbrücken", "website": "https://www.gasthaus-zahm.de/", "menu": "https://www.gasthaus-zahm.de/", "menuNote": "官网：每天 12 点起，厨房至 22:30；未列餐厅打烊时间，实时营业状态待确认。时令萨尔兰与德法菜。 Google 4.6 / 916 为第三方快照，非实时评分。", "schedule": null},
+  {"name": "Haus Brück", "category": "德法料理 · 时令菜", "group": "restaurant", "rating": 4.6, "reviews": 251, "sources": ["推荐补充"], "address": "Mainzer Straße 6, 66111 Saarbrücken", "website": "https://haus-brueck.de/", "menu": "https://haus-brueck.jimdosite.com/menue/", "menuNote": "官网厨房时间：周一至周五 11:30–14:30；周二至周六 18–21:30；周日休息。餐厅周二至周五下午保持开放，未列完整餐厅时段，实时状态待确认。 Google 4.6 / 251 为第三方快照，非实时评分。", "schedule": null},
+  {"name": "La Bastille", "category": "法式 · 德法 Bistro", "group": "restaurant", "rating": 4.5, "reviews": 652, "sources": ["推荐补充"], "address": "Kronenstraße 1b, 66111 Saarbrücken", "website": "https://www.restaurant-labastille.de/", "menu": "https://www.restaurant-labastille.de/speisekarte/", "menuNote": "官网厨房：周二至周六 11:30–14；周五、周六另有 17–21 晚市。餐厅约 15:30／22:30 打烊，时间非固定，暂不计算实时营业；周日、周一及节假日休息。 Google 4.5 / 652 为第三方快照，非实时评分。", "schedule": null},
+
+  // La Paella checked 2026-10-29; official schedule, third-party Google snapshot.
+  {"name": "La Paella", "category": "西班牙 · Paella · Tapas", "group": "restaurant", "rating": 4.6, "reviews": 420, "sources": ["推荐补充"], "address": "Kanalstraße 15, 66130 Saarbrücken", "website": "https://lapaella.metro.rest/?lang=de", "menuNote": "西班牙菜、Paella 与 Tapas · 官网时段：周二至周六晚餐 18–22；周五另有 12–15 午市；周日 12–15、18–21；周一休息。周五至周日可外带 Paella；官网列现金付款。Google 4.6 / 420 为第三方快照，非实时评分。", "schedule": [[["12:00", "15:00"], ["18:00", "21:00"]], [], [["18:00", "22:00"]], [["18:00", "22:00"]], [["18:00", "22:00"]], [["12:00", "15:00"], ["18:00", "22:00"]], [["18:00", "22:00"]]]},
   // Additions reviewed 2026-10-08; see docs/opening-review-2026-10-08.md.
   {"name": "Jouliard", "category": "法式 · Bistro", "group": "restaurant", "rating": null, "reviews": null, "sources": ["推荐补充"], "address": "Scheidter Straße 66, 66123 Saarbrücken", "website": "https://www.jouliard.de/", "menu": "https://www.jouliard.de/", "menuNote": "4 月 8 日新团队重开 · 官网：周二、周三 18–22；周四至周六 12–14、18–22；周日、周一休息。电话预约 0681 59590688；纯素菜需提前预订。", "schedule": [[], [], [["18:00", "22:00"]], [["18:00", "22:00"]], [["12:00", "14:00"], ["18:00", "22:00"]], [["12:00", "14:00"], ["18:00", "22:00"]], [["12:00", "14:00"], ["18:00", "22:00"]]], "reopenedOn": "2026-04-08"},
   {"name": "Goni’s Grill Haus", "category": "Grill · 餐厅", "group": "restaurant", "rating": null, "reviews": null, "sources": ["推荐补充"], "address": "Saarbrücker Straße 273, 66125 Saarbrücken", "website": "https://www.neueroeffnung.info/saarbruecken/gonis-grill-haus", "menuNote": "开业目录列 8 月 8 日开业；周二、周四、周六 11–23，周五 11–14、17–23；周一、周三休息，未列周日，请向店家确认。", "schedule": null, "openedOn": "2026-08-08"},
@@ -132,6 +142,7 @@ export const places: Place[] = [
 ];
 
 export const placeCoordinates: Record<string, [number, number]> = {
+  'La Paella':[49.1980664,7.0297671], // Official venue JSON-LD.
   'Amidos & Helmi':[49.22978,7.00857], // OpenStreetMap node 6017949512.
   'Berliner Döner by Kemo':[49.241189,6.9443032], // Bald-in location page.
   'Schnitzery':[49.2344520,6.9931977], // Berliner Promenade 18; same address as F.A.K.
@@ -193,6 +204,14 @@ export const placeCoordinates: Record<string, [number, number]> = {
 };
 
 export const mapImages: Record<string, string> = {
+  "Musaïq":asset('venue-musaiq.jpg'),
+  "Restaurant Hashimoto":asset('venue-hashimoto.jpg'),
+  "Izakaya Hashimoto":asset('venue-izakaya-hashimoto.jpg'),
+  "Gasthaus Zahm":asset('venue-gasthaus-zahm.jpg'),
+  "Haus Brück":asset('venue-haus-brueck.jpg'),
+  "La Bastille":asset('venue-la-bastille.jpg'),
+
+  'La Paella':asset('venue-la-paella.jpg'),
   // Actual venue/dish photos; sources recorded in docs/opening-review-2026-10-08.md.
   'Jouliard':asset('venue-jouliard.webp'),
   'Goni’s Grill Haus':asset('venue-gonis-grill-haus.jpg'),
